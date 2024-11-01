@@ -1,6 +1,5 @@
 #include <SFML/Graphics.hpp>
 #include "Food.h"
-#include <vector>
 #include "Board.h"
 
 Board::Board(int w, int h, sf::RenderWindow &win) : width(w), height(h), window(win) {}
@@ -40,4 +39,16 @@ void Board::draw() const {
     }
 
     window.display();
+}
+
+const std::vector<Food*>& Board::getFoods() const {
+    return foods;
+}
+
+void Board::removeFood(Food *food) {
+    auto it = std::find(foods.begin(), foods.end(), food);
+    if (it != foods.end()) {
+        delete *it;
+        foods.erase(it);
+    }
 }
