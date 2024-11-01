@@ -21,6 +21,6 @@ public:
     [[nodiscard]] int getHeight() const { return height; }
     [[nodiscard]] const std::vector<Food*>& getFoods() const;
     void removeFood(Food *food);
-
+    [[nodiscard]] bool isWithinBounds(const sf::Vector2f &position) const;
     [[nodiscard]] sf::RenderWindow& getWindow() const { return window; }
 };

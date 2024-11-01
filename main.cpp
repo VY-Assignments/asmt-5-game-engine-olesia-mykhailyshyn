@@ -47,16 +47,14 @@ int main() {
                     window.close();
                 } else if (event.type == sf::Event::KeyPressed) {
                     if (event.key.code == sf::Keyboard::Num1) {
-                        // Start a new game
                         game = std::make_unique<Game>(window);
                         gameRunning = true;
                     } else if (event.key.code == sf::Keyboard::Num2) {
-                        // View top scores
                         window.clear();
                         scoreboard.load();
                         scoreboard.display();
-                        system("pause");  // Wait for user to press a key
-                        displayMenu(window);  // Redisplay menu after viewing scores
+                        system("pause");
+                        displayMenu(window);
                     } else if (event.key.code == sf::Keyboard::Num3) {
                         // Exit
                         window.close();
@@ -64,7 +62,6 @@ int main() {
                 }
             }
         } else {
-            // Run the game loop
             sf::Clock clock;
 
             while (window.isOpen() && gameRunning) {

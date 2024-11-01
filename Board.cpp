@@ -52,3 +52,7 @@ void Board::removeFood(Food *food) {
         foods.erase(it);
     }
 }
+bool Board::isWithinBounds(const sf::Vector2f &position) const {
+    return position.x >= 0 && position.x < width * 10 &&
+           position.y >= 0 && position.y < height * 10;
+}

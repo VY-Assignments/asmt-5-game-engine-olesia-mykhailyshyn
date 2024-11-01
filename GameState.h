@@ -15,6 +15,8 @@ public:
     void handleInput();
     void update();
     void draw();
+    void createNewFood();
+
     [[nodiscard]] bool gameOver() const;
 };
 

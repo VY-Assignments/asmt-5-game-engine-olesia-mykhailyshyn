@@ -6,7 +6,8 @@
 
 Game::Game(sf::RenderWindow& windowRef)
         : board(40, 40, windowRef),
-          snake(20, 20),
+          snake("C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/Head.png",
+                "C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/BodyBlock.png"),
           state(State::RUNNING),
           normalFood(std::make_unique<NormalFood>()),
           poisonousFood(std::make_unique<PoisonousFood>()),
@@ -23,13 +24,14 @@ void Game::run() {
     handleInput();
     snake.move();
 
-    if (snake.getHeadPosition() == normalFood->getPosition()) {
+    if (snake.getHeadPosition() == normalFood->getPosition().toVector2f()) {
         snake.applyFoodEffect(*normalFood);
         createNewFood();
-    } else if (snake.getHeadPosition() == poisonousFood->getPosition()) {
+    } else if (snake.getHeadPosition() == poisonousFood->getPosition().toVector2f()) {
         snake.applyFoodEffect(*poisonousFood);
         createNewFood();
     }
+
 
     if (snake.hasCollidedWithItself()) {
         state = State::GAME_OVER;
