@@ -18,16 +18,18 @@ public:
 };
 
 class NormalFood : public Food {
+    sf::Texture texture;
 public:
-    NormalFood() { setPosition(rand() % 40, rand() % 40); }
+    NormalFood();
     [[nodiscard]] bool isPoisonous() const override { return false; }
     void applyEffect() override {}
     void draw(sf::RenderWindow &window) const override;
 };
 
 class PoisonousFood : public Food {
+    sf::Texture texture;
 public:
-    PoisonousFood() { setPosition(rand() % 40, rand() % 40); }
+    PoisonousFood();
     [[nodiscard]] bool isPoisonous() const override { return true; }
     void applyEffect() override {}
     void draw(sf::RenderWindow &window) const override;

@@ -49,21 +49,13 @@ int main() {
                     if (event.key.code == sf::Keyboard::Num1) {
                         game = std::make_unique<Game>(window);
                         gameRunning = true;
-                    } else if (event.key.code == sf::Keyboard::Num2) {
-                        window.clear();
-                        scoreboard.load();
-                        scoreboard.display();
-                        system("pause");
-                        displayMenu(window);
                     } else if (event.key.code == sf::Keyboard::Num3) {
-                        // Exit
                         window.close();
                     }
                 }
             }
         } else {
             sf::Clock clock;
-
             while (window.isOpen() && gameRunning) {
                 sf::Event event{};
                 while (window.pollEvent(event)) {

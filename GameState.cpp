@@ -9,7 +9,7 @@ GameState::GameState(int width, int height, sf::RenderWindow &window, const std:
                 "C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/BodyBlock.png"),
           scoreboard(scoreboardPath),
           isGameOver(false) {
-    std::srand(static_cast<unsigned>(std::time(nullptr)));  // Seed for random food position
+    std::srand(static_cast<unsigned>(std::time(nullptr)));
     scoreboard.manageScoreboard();
     createNewFood();
 }
@@ -34,6 +34,7 @@ void GameState::handleInput() {
         snake.setDirection(Snake::Direction::Right);
     }
 }
+
 
 void GameState::update() {
     if (!isGameOver) {
