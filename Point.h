@@ -17,4 +17,5 @@ public:
     void setPoint(int x, int y);
 
     [[nodiscard]] bool isEqual(const Point &other) const;
+    bool operator==(const Point &other) const;
 };

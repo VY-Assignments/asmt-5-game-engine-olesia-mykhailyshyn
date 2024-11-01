@@ -1,5 +1,8 @@
+#pragma once
 #include "Point.h"
 #include <SFML/Graphics.hpp>
+#include <vector>
+#include <string>
 
 class Player {
 public:

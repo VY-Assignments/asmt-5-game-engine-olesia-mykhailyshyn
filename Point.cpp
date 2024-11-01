@@ -13,3 +13,7 @@ void Point::setPoint(int x, int y) { this->x = x; this->y = y; }
 bool Point::isEqual(const Point &other) const {
     return (x == other.x && y == other.y);
 }
+
+bool Point::operator==(const Point &other) const {
+    return x == other.x && y == other.y;
+}
