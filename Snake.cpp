@@ -1,6 +1,6 @@
 #include "Snake.h"
 
-Snake::Snake(int startX, int startY) : currentDirection(Direction::Right), color(sf::Color::Green), minSize(3) {
+Snake::Snake(int startX, int startY) : currentDirection(Direction::Right), color(sf::Color::Green), minSize(1) {
     body.emplace_back(startX, startY);
 }
 
@@ -15,19 +15,25 @@ void Snake::setDirection(Direction newDirection) {
 
 void Snake::move() {
     Point head = body.front();
+    int boardWidth = 40;
+    int boardHeight = 40;
+
     switch (currentDirection) {
-        case Direction::Up: head.setPoint(head.getX(), head.getY() - 1); break;
-        case Direction::Down: head.setPoint(head.getX(), head.getY() + 1); break;
-        case Direction::Left: head.setPoint(head.getX() - 1, head.getY()); break;
-        case Direction::Right: head.setPoint(head.getX() + 1, head.getY()); break;
+        case Direction::Up:    head.setPoint(head.getX(), (head.getY() - 1 + boardHeight) % boardHeight); break;
+        case Direction::Down:  head.setPoint(head.getX(), (head.getY() + 1) % boardHeight); break;
+        case Direction::Left:  head.setPoint((head.getX() - 1 + boardWidth) % boardWidth, head.getY()); break;
+        case Direction::Right: head.setPoint((head.getX() + 1) % boardWidth, head.getY()); break;
     }
+
     body.insert(body.begin(), head);
-    body.pop_back();
+
+    if (body.size() > 2) {
+        body.pop_back();
+    }
 }
 
 bool Snake::hasCollidedWithWall(const Board &board) const {
-    Point head = body.front();
-    return head.getX() < 0 || head.getY() < 0 || head.getX() >= board.getWidth() || head.getY() >= board.getHeight();
+    return false;
 }
 
 bool Snake::hasCollidedWithItself() const {
@@ -52,15 +58,17 @@ void Snake::draw(sf::RenderWindow &window) const {
 }
 
 void Snake::grow() {
-    body.push_back(body.back());
-    color = sf::Color::Yellow;
+    if (body.size() < 2) {
+        body.push_back(body.back());
+        color = sf::Color::Green;
+    }
 }
 
 void Snake::shrink() {
-    if (body.size() > minSize) {
+    while (body.size() > 1) {
         body.pop_back();
-        color = sf::Color::Red;
     }
+    color = sf::Color::Red;
 }
 
 void Snake::applyFoodEffect(const Food& food) {

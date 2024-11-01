@@ -10,7 +10,8 @@ class Game {
 private:
     Board board;
     Snake snake;
-    std::unique_ptr<Food> food;
+    std::unique_ptr<Food> normalFood;
+    std::unique_ptr<Food> poisonousFood;
     Scoreboard scoreboard;
     State state;
 

@@ -4,6 +4,7 @@
 int main() {
     sf::RenderWindow window(sf::VideoMode(400, 400), "Snake Game");
     Game game(window);
+    sf::Clock clock;
 
     while (window.isOpen()) {
         sf::Event event{};
@@ -13,8 +14,11 @@ int main() {
             }
         }
 
-        game.handleInput();
-        game.run();
+        if (clock.getElapsedTime().asSeconds() > 0.1f) {
+            game.handleInput();
+            game.run();
+            clock.restart();
+        }
 
         window.clear();
         game.draw();

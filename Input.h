@@ -1,6 +1,3 @@
-#pragma once
-#include <SFML/Graphics.hpp>
-
 enum class Input {
     Up,
     Down,
@@ -14,20 +11,17 @@ enum class Input {
 class InputHandler {
 public:
     static Input getInput() {
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
             return Input::Up;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
             return Input::Down;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
             return Input::Left;
         }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
             return Input::Right;
-        }
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::P)) {
-            return Input::Pause;
         }
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)) {
             return Input::Exit;
