@@ -22,4 +22,7 @@ public:
     void createNewFood();
     void saveScore();
     void draw();
+    [[nodiscard]] bool gameOver() const { return state == State::GAME_OVER; }
+    [[nodiscard]] int getScore() const { return snake.getScore(); }
+
 };
