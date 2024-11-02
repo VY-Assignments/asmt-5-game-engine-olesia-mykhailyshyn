@@ -4,8 +4,8 @@
 #include <memory>
 #include <iostream>
 
-Game::Game(sf::RenderWindow& windowRef)
-        : board(40, 40, windowRef),
+Game::Game(sf::RenderWindow& window)
+        : board(40, 40, window),
           snake("C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/Head.png",
                 "C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/BodyBlock.png"),
           state(State::RUNNING),
@@ -18,25 +18,31 @@ Game::Game(sf::RenderWindow& windowRef)
 
 void Game::run() {
     if (state == State::GAME_OVER) {
-        saveScore();
+        scoreboard.save();
         return;
     }
+
     handleInput();
     snake.move();
 
-    if (snake.getHeadPosition() == normalFood->getPosition().toVector2f()) {
-        snake.applyFoodEffect(*normalFood);
+    // Check food interactions
+    if (snake.getHeadPosition() == normalFood->getPosition()) {
+        snake.grow();
         createNewFood();
-    } else if (snake.getHeadPosition() == poisonousFood->getPosition().toVector2f()) {
-        snake.applyFoodEffect(*poisonousFood);
-        createNewFood();
+    } else if (snake.getHeadPosition() == poisonousFood->getPosition()) {
+        if (snake.getSize() > 1) {
+            snake.shrink();
+            createNewFood();
+        } else {
+            state = State::GAME_OVER;
+        }
     }
-
 
     if (snake.hasCollidedWithItself()) {
         state = State::GAME_OVER;
     }
 }
+
 
 void Game::createNewFood() {
     normalFood->setPosition(rand() % board.getWidth(), rand() % board.getHeight());
@@ -44,25 +50,14 @@ void Game::createNewFood() {
 }
 
 void Game::handleInput() {
-    Input input = InputHandler::getInput();
-    switch (input) {
-        case Input::Up:
-            snake.setDirection(Snake::Direction::Up);
-            break;
-        case Input::Down:
-            snake.setDirection(Snake::Direction::Down);
-            break;
-        case Input::Left:
-            snake.setDirection(Snake::Direction::Left);
-            break;
-        case Input::Right:
-            snake.setDirection(Snake::Direction::Right);
-            break;
-        case Input::Exit:
-            state = State::GAME_OVER;
-            break;
-        default:
-            break;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+        snake.setDirection(Snake::Direction::Up);
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
+        snake.setDirection(Snake::Direction::Down);
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+        snake.setDirection(Snake::Direction::Left);
+    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+        snake.setDirection(Snake::Direction::Right);
     }
 }
 
@@ -72,6 +67,7 @@ void Game::saveScore() {
         std::cout << "Score saving failed." << std::endl;
     }
 }
+
 
 void Game::draw() {
     board.clear();

@@ -1,42 +1,32 @@
 #include "Snake.h"
-#include <stdexcept>
 
 Snake::Snake(const std::string &headTexturePath, const std::string &bodyTexturePath)
-        : currentDirection(Direction::Right) {
-    if (!headTexture.loadFromFile(headTexturePath)) {
-        throw std::runtime_error("Failed to load head texture");
-    }
-    if (!bodyTexture.loadFromFile(bodyTexturePath)) {
-        throw std::runtime_error("Failed to load body texture");
-    }
+        : score(0), minSize(1), currentDirection(Direction::Right) {
 
-    initializeHead();
-    addInitialBodySegment();
-}
+    headTexture.loadFromFile(headTexturePath);
+    bodyTexture.loadFromFile(bodyTexturePath);
 
-void Snake::initializeHead() {
     sf::Sprite headSegment;
     headSegment.setTexture(headTexture);
-    headSegment.setScale(10.f / headTexture.getSize().x, 10.f / headTexture.getSize().y);
-    headSegment.setPosition(200, 200);
+    headSegment.setPosition(20 * 10, 20 * 10);
     body.push_back(headSegment);
-}
 
-void Snake::addInitialBodySegment() {
     sf::Sprite bodySegment;
     bodySegment.setTexture(bodyTexture);
-    bodySegment.setScale(10.f / bodyTexture.getSize().x, 10.f / bodyTexture.getSize().y);
-    bodySegment.setPosition(190, 200);
+    bodySegment.setPosition(19 * 10, 20 * 10);
     body.push_back(bodySegment);
 }
 
+int Snake::getScore() const {
+    return score;
+}
+
+int Snake::getSize() const {
+    return static_cast<int>(body.size());
+}
+
 void Snake::setDirection(Direction newDirection) {
-    if ((currentDirection == Direction::Up && newDirection != Direction::Down) ||
-        (currentDirection == Direction::Down && newDirection != Direction::Up) ||
-        (currentDirection == Direction::Left && newDirection != Direction::Right) ||
-        (currentDirection == Direction::Right && newDirection != Direction::Left)) {
-        currentDirection = newDirection;
-    }
+    currentDirection = newDirection;
 }
 
 void Snake::move() {
@@ -54,8 +44,32 @@ void Snake::move() {
     body[0].setPosition(newPos);
 }
 
-sf::Vector2f Snake::getHeadPosition() const {
-    return body[0].getPosition();
+void Snake::grow() {
+    sf::Sprite newSegment;
+    newSegment.setTexture(bodyTexture);
+    newSegment.setPosition(body.back().getPosition());
+    body.push_back(newSegment);
+    score++;  // Increment score when the snake grows
+}
+
+void Snake::shrink() {
+    if (body.size() > minSize) {
+        body.pop_back();
+        score--;  // Decrement score when the snake shrinks
+    }
+}
+
+void Snake::applyFoodEffect(const Food& food) {
+    if (food.isPoisonous()) {
+        shrink();
+    } else {
+        grow();
+    }
+}
+
+Point Snake::getHeadPosition() const {
+    sf::Vector2f pos = body[0].getPosition();
+    return Point(static_cast<int>(pos.x / 10), static_cast<int>(pos.y / 10));
 }
 
 bool Snake::hasCollidedWithItself() const {
@@ -67,29 +81,8 @@ bool Snake::hasCollidedWithItself() const {
     return false;
 }
 
-void Snake::grow() {
-    sf::Sprite newSegment;
-    newSegment.setTexture(bodyTexture);
-    newSegment.setScale(10.f / bodyTexture.getSize().x, 10.f / bodyTexture.getSize().y);
-    newSegment.setPosition(body.back().getPosition());
-    body.push_back(newSegment);
-}
-
 void Snake::draw(sf::RenderWindow &window) const {
     for (const auto &segment : body) {
         window.draw(segment);
     }
-}
-
-void Snake::applyFoodEffect(const Food& food) {
-    if (food.isPoisonous()) {
-        if (body.size() > 1) {
-            body.pop_back();
-        }
-    } else {
-        grow();
-    }
-}
-int Snake::getScore() const {
-    return static_cast<int>(body.size() - 1);
 }

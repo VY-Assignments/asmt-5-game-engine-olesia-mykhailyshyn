@@ -34,19 +34,21 @@ void GameState::handleInput() {
     }
 }
 
-
 void GameState::update() {
     if (!isGameOver) {
         snake.move();
 
-        if (!board.isWithinBounds(snake.getHeadPosition()) || snake.hasCollidedWithItself()) {
+        // Convert Point to sf::Vector2f for compatibility with isWithinBounds
+        sf::Vector2f headPosition(snake.getHeadPosition().getX() * 10, snake.getHeadPosition().getY() * 10);
+
+        if (!board.isWithinBounds(headPosition) || snake.hasCollidedWithItself()) {
             isGameOver = true;
             return;
         }
 
         for (auto &food : board.getFoods()) {
-            if (snake.getHeadPosition().x == food->getPosition().getX() &&
-                snake.getHeadPosition().y == food->getPosition().getY()) {
+            if (snake.getHeadPosition().getX() == food->getPosition().getX() &&
+                snake.getHeadPosition().getY() == food->getPosition().getY()) {
                 snake.applyFoodEffect(*food);
                 board.removeFood(food);
                 createNewFood();

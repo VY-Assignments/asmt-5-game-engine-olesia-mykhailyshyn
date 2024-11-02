@@ -17,3 +17,8 @@ bool Point::isEqual(const Point &other) const {
 bool Point::operator==(const Point &other) const {
     return x == other.x && y == other.y;
 }
+
+// Convert Point to sf::Vector2f
+sf::Vector2f Point::toVector2f() const {
+    return sf::Vector2f(static_cast<float>(x * 10), static_cast<float>(y * 10));
+}
