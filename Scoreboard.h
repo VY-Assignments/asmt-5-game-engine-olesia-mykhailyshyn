@@ -1,8 +1,7 @@
 #pragma once
-#include "Point.h"
-#include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
+#include <SFML/Graphics.hpp>
 
 class Player {
 public:
@@ -10,6 +9,10 @@ public:
     int score;
 
     Player(std::string name, int score) : name(std::move(name)), score(score) {}
+
+    bool operator==(const Player &other) const {
+        return name == other.name && score == other.score;
+    }
 };
 
 class Scoreboard {
@@ -23,5 +26,5 @@ public:
     [[nodiscard]] bool save() const;
     void addPlayer(const Player &player);
     void display() const;
-    void manageScoreboard();
+    [[nodiscard]] const std::vector<Player>& getScores() const;  
 };

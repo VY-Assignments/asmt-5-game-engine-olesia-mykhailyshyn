@@ -10,7 +10,6 @@ GameState::GameState(int width, int height, sf::RenderWindow &window, const std:
           scoreboard(scoreboardPath),
           isGameOver(false) {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
-    scoreboard.manageScoreboard();
     createNewFood();
 }
 

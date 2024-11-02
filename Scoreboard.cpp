@@ -1,7 +1,6 @@
 #include "Scoreboard.h"
 #include <iostream>
 #include <fstream>
-#include <utility>
 #include <sstream>
 
 Scoreboard::Scoreboard(std::string path) : filePath(std::move(path)) {}
@@ -9,7 +8,7 @@ Scoreboard::Scoreboard(std::string path) : filePath(std::move(path)) {}
 bool Scoreboard::load() {
     std::ifstream file(filePath);
     if (!file.is_open()) {
-        std::cout << "Failed to open the file: " << filePath << std::endl;
+        std::cerr << "Failed to open the file: " << filePath << std::endl;
         return false;
     }
 
@@ -20,7 +19,7 @@ bool Scoreboard::load() {
         std::string name;
         int score;
         if (!(iss >> name >> score)) {
-            std::cout << "Invalid data format in file." << std::endl;
+            std::cerr << "Invalid data format in file." << std::endl;
             players.clear();
             return false;
         }
@@ -34,7 +33,7 @@ bool Scoreboard::load() {
 bool Scoreboard::save() const {
     std::ofstream file(filePath);
     if (!file.is_open()) {
-        std::cout << "Failed to open the file: " << filePath << std::endl;
+        std::cerr << "Failed to open the file: " << filePath << std::endl;
         return false;
     }
 
@@ -57,27 +56,6 @@ void Scoreboard::display() const {
     }
 }
 
-void Scoreboard::manageScoreboard() {
-    if (!load()) {
-        std::cout << "Error loading scoreboard data." << std::endl;
-        return;
-    }
-
-    std::string name;
-    int score;
-
-    std::cout << "Enter your name: ";
-    std::cin >> name;
-    std::cout << "Enter your score: ";
-    std::cin >> score;
-
-    Player player(name, score);
-    addPlayer(player);
-
-    if (!save()) {
-        std::cout << "Error saving scoreboard data." << std::endl;
-        return;
-    }
-
-    display();
+const std::vector<Player>& Scoreboard::getScores() const {
+    return players;
 }
