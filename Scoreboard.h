@@ -26,5 +26,5 @@ public:
     [[nodiscard]] bool save() const;
     void addPlayer(const Player &player);
     void display() const;
-    [[nodiscard]] const std::vector<Player>& getScores() const;  
+    [[nodiscard]] const std::vector<Player>& getScores() const;
 };
