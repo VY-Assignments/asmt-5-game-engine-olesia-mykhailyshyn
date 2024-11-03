@@ -29,6 +29,11 @@ void Scoreboard::saveScore(const std::string& name, int score) {
     std::sort(scores.begin(), scores.end());
 
     std::ofstream fileStream(file);
+    if (!fileStream.is_open()) {
+        std::cerr << "Error: Could not open score file for writing.\n";
+        return;
+    }
+
     for (const auto& entry : scores) {
         fileStream << entry.name << "-" << entry.score << "\n";
     }

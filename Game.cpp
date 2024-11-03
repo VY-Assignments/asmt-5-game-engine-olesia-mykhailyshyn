@@ -3,6 +3,7 @@
 
 Game::Game(const std::string& playerName) : playerName(playerName) {
     gameOver = false;
+    scoreboard = Scoreboard(R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)"); // Initialize Scoreboard with file path
 }
 
 void Game::run(sf::RenderWindow& window) {
@@ -22,6 +23,7 @@ void Game::run(sf::RenderWindow& window) {
         update();
         render(window);
     }
+    scoreboard.saveScore(playerName, snake.getSize());
 }
 
 void Game::update() {
@@ -37,8 +39,7 @@ void Game::update() {
         if (snake.getSize() > 1) {
             snake.shrinkSnake();
             poisonousFood.respawn();
-        }
-        else {
+        } else {
             scoreboard.saveScore(playerName, snake.getSize());
             gameOver = true;
         }

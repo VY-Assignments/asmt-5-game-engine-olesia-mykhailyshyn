@@ -54,7 +54,7 @@ int showWelcomeScreen(sf::RenderWindow& window) {
         window.draw(option3);
         window.display();
     }
-    return 3; // Default to exit if window closes
+    return 3;
 }
 
 
@@ -205,7 +205,7 @@ void showScoreboard(sf::RenderWindow& window) {
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
-                return; // Return to welcome screen
+                return;
             }
         }
     }
