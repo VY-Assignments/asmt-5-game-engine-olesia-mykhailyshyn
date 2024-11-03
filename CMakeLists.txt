@@ -13,6 +13,7 @@ add_executable(asmt-5-game-engine-olesia-mykhailyshyn
         Game.cpp
         Screen.cpp
         InputHandler.cpp
+        FoodFactory.h
 )
 
 target_link_libraries(asmt-5-game-engine-olesia-mykhailyshyn sfml-graphics sfml-window sfml-system opengl32 freetype winmm gdi32 user32 ws2_32)

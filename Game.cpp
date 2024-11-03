@@ -1,8 +1,12 @@
 #include "Game.h"
+#include "FoodFactory.h"
 #include <iostream>
 
 Game::Game(const std::string& playerName) : playerName(playerName) {
     gameOver = false;
+
+    normalFood = FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)");
+    poisonousFood = FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)");
 }
 
 void Game::run(sf::RenderWindow& window) {
@@ -33,16 +37,16 @@ int Game::getFinalScore() const {
 void Game::update() {
     snake.move();
 
-    if (snake.getHeadPosition() == normalFood.getPosition()) {
+    if (snake.getHeadPosition() == normalFood->getPosition()) {
         snake.growSnake();
-        normalFood.respawn();
+        normalFood->respawn();
         snake.setFirstFoodEaten();
     }
 
-    if (snake.getHeadPosition() == poisonousFood.getPosition()) {
+    if (snake.getHeadPosition() == poisonousFood->getPosition()) {
         if (snake.getSize() > 1) {
             snake.shrinkSnake();
-            poisonousFood.respawn();
+            poisonousFood->respawn();
         }
         else {
             Scoreboard::getInstance().saveScore(playerName, snake.getSize());
@@ -66,8 +70,8 @@ void Game::render(sf::RenderWindow& window) {
     window.clear(sf::Color(20, 20, 50));
     drawGrid(window);
     snake.draw(window);
-    normalFood.draw(window);
-    poisonousFood.draw(window);
+    normalFood->draw(window);
+    poisonousFood->draw(window);
     window.display();
 }
 

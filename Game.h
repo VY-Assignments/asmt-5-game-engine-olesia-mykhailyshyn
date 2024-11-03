@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <memory>
 #include "Snake.h"
 #include "Food.h"
 #include "Scoreboard.h"
@@ -9,7 +10,7 @@ class Game {
 public:
     explicit Game(const std::string& playerName);
     void run(sf::RenderWindow& window);
-    int getFinalScore() const;
+    [[nodiscard]] int getFinalScore() const;
 
 private:
     void update();
@@ -18,9 +19,8 @@ private:
     static void drawGrid(sf::RenderWindow& window);
 
     Snake snake;
-    NormalFood normalFood{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"};
-    PoisonousFood poisonousFood{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"};
-    InputHandler inputHandler;
+    std::unique_ptr<Food> normalFood;
+    std::unique_ptr<Food> poisonousFood;
     std::string playerName;
     bool gameOver = false;
 };
