@@ -103,3 +103,7 @@ void Game::drawGrid(sf::RenderWindow& window) {
         }
     }
 }
+
+int Game::getFinalScore() const {
+    return snake.getSize();  // Returns the final score as the snake's size
+}

@@ -9,6 +9,7 @@ class Game {
 public:
     explicit Game(const std::string& playerName);
     void run(sf::RenderWindow& window);
+    int getFinalScore() const;  // Add this method
 
 private:
     void update();

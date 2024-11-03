@@ -4,8 +4,7 @@
 #include <sstream>
 #include <iostream>
 
-Scoreboard::Scoreboard(const std::string& file)
-        : file(file) {}
+Scoreboard::Scoreboard(const std::string& file) : file(file) {}
 
 void Scoreboard::loadScores() {
     scores.clear();
@@ -38,6 +37,24 @@ void Scoreboard::saveScore(const std::string& name, int score) {
         fileStream << entry.name << "-" << entry.score << "\n";
     }
     fileStream.close();
+}
+
+std::vector<ScoreEntry> Scoreboard::getTopScores(int n) const {
+    std::vector<ScoreEntry> topScores;
+    int limit = std::min(n, static_cast<int>(scores.size()));
+    for (int i = 0; i < limit; i++) {
+        topScores.push_back(scores[i]);
+    }
+    return topScores;
+}
+
+int Scoreboard::getRank(const std::string& name, int score) const {
+    for (size_t i = 0; i < scores.size(); ++i) {
+        if (scores[i].name == name && scores[i].score == score) {
+            return i + 1;
+        }
+    }
+    return -1;  // If not found
 }
 
 bool ScoreEntry::operator<(const ScoreEntry& other) const {

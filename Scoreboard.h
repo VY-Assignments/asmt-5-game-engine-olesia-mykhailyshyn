@@ -18,7 +18,10 @@ public:
     void loadScores();
     void saveScore(const std::string& name, int score);
 
-    std::vector<ScoreEntry> scores;
+    std::vector<ScoreEntry> getTopScores(int n) const;
+    int getRank(const std::string& name, int score) const;
+
 private:
     std::string file;
+    std::vector<ScoreEntry> scores;
 };

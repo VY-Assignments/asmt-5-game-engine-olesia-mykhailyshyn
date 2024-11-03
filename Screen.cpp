@@ -163,7 +163,7 @@ void showGameOverScreen(sf::RenderWindow& window) {
     }
 }
 
-void showScoreboard(sf::RenderWindow& window) {
+void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int playerScore) {
     Scoreboard scoreboard(R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)");
     scoreboard.loadScores();
 
@@ -179,17 +179,28 @@ void showScoreboard(sf::RenderWindow& window) {
     window.clear(sf::Color(20, 20, 50));
     window.draw(scoreboardTitle);
 
-    int y_offset = HEIGHT / 3;
+    int y_offset = HEIGHT / 4;
     int count = 1;
-    for (const auto& score : scoreboard.scores) {
-        if (count > 3) break;
+
+    // Display top 3 scores with a highlighted color
+    for (const auto& score : scoreboard.getTopScores(3)) {
         std::string scoreText = std::to_string(count) + ". " + score.name + " - " + std::to_string(score.score);
-        sf::Text scoreEntry(scoreText, font, 25);
-        scoreEntry.setFillColor(sf::Color(230, 230, 250));
+        sf::Text scoreEntry(scoreText, font, 30);
+        scoreEntry.setFillColor(sf::Color::Cyan);  // Highlight color for top scores
         scoreEntry.setPosition(WIDTH / 4, y_offset);
         window.draw(scoreEntry);
-        y_offset += 40;
+        y_offset += 50;
         count++;
+    }
+
+    // Get the current game's rank and display it separately
+    int playerRank = scoreboard.getRank(playerName, playerScore);
+    if (playerRank > 3) {
+        std::string playerRankText = "Your rank: " + std::to_string(playerRank) + ". " + playerName + " - " + std::to_string(playerScore);
+        sf::Text playerRankEntry(playerRankText, font, 25);
+        playerRankEntry.setFillColor(sf::Color::White);
+        playerRankEntry.setPosition(WIDTH / 4, y_offset + 20);
+        window.draw(playerRankEntry);
     }
 
     sf::Text instruction("Press Enter to return to the main menu", font, 25);
@@ -205,7 +216,7 @@ void showScoreboard(sf::RenderWindow& window) {
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
-                return;
+                return;  // Return to welcome screen
             }
         }
     }
