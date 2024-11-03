@@ -47,14 +47,15 @@ void Snake::move() {
 void Snake::growSnake() { grow = true; }
 
 void Snake::shrinkSnake() {
-    if (segments.size() > 1) segments.pop_back();
+    if (segments.size() > 1) {
+        segments.pop_back();
+        --size;
+    }
 }
 
 bool Snake::reachedMaxSize() const { return size >= 200; }
 
 sf::Vector2f Snake::getHeadPosition() const { return segments[0]; }
-
-int Snake::getSize() const { return size; }
 
 void Snake::draw(sf::RenderWindow& window) {
     sf::RectangleShape segmentShape(sf::Vector2f(50, 50));

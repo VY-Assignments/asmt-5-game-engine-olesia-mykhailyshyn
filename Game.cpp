@@ -34,12 +34,13 @@ void Game::update() {
     }
 
     if (snake.getHeadPosition() == poisonousFood.getPosition()) {
-        if (snake.getSize() == 1) {
-            scoreboard.saveScore(playerName, snake.getSize());
-            gameOver = true;
-        } else {
+        if (snake.getSize() > 1) {
             snake.shrinkSnake();
             poisonousFood.respawn();
+        }
+        else {
+            scoreboard.saveScore(playerName, snake.getSize());
+            gameOver = true;
         }
     }
 
@@ -57,7 +58,7 @@ void Game::update() {
 
 void Game::render(sf::RenderWindow& window) {
     window.clear(sf::Color(20, 20, 50));
-    drawGrid(window);  // Call drawGrid to draw the grid on the window
+    drawGrid(window);
     snake.draw(window);
     normalFood.draw(window);
     poisonousFood.draw(window);

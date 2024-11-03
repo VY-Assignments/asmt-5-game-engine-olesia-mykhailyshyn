@@ -15,7 +15,7 @@ public:
     [[nodiscard]] bool reachedMaxSize() const;
     [[nodiscard]] sf::Vector2f getHeadPosition() const;
     void setFirstFoodEaten();
-    [[nodiscard]] int getSize() const;
+    [[nodiscard]] int getSize() const { return segments.size(); }
     void draw(sf::RenderWindow& window);
 
 private:
