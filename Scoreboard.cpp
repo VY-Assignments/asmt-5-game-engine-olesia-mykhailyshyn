@@ -18,14 +18,17 @@ void Scoreboard::loadScores() {
     std::string line;
     while (std::getline(fileStream, line)) {
         std::istringstream lineStream(line);
-        std::getline(lineStream, entry.name, ','); // Use comma as delimiter for CSV
+        std::getline(lineStream, entry.name, ','); // CSV delimiter
         lineStream >> entry.score;
         scores.push_back(entry);
     }
     fileStream.close();
 
-    // Sort in descending order of score
-    std::sort(scores.begin(), scores.end());
+    std::sort(scores.begin(), scores.end());  // Sort in descending order of score
+}
+
+int Scoreboard::getTotalPlayers() const {
+    return scores.size();  // Total number of entries loaded
 }
 
 void Scoreboard::saveScore(const std::string& name, int score) {

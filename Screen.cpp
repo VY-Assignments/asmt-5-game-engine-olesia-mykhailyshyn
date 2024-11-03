@@ -1,7 +1,6 @@
 #include "Screen.h"
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include <vector>
 #include <stdexcept>
 #include "Scoreboard.h"
 
@@ -10,9 +9,7 @@ const int HEIGHT = 1000;
 
 int showWelcomeScreen(sf::RenderWindow& window) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
-        throw std::runtime_error("Unable to load font!");
-    }
+    font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
     sf::Text title("Welcome to Snake Game", font, 50);
     title.setFillColor(sf::Color::White);
@@ -35,13 +32,16 @@ int showWelcomeScreen(sf::RenderWindow& window) {
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-            } else if (event.type == sf::Event::KeyPressed) {
+            }
+            else if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Num1) {
-                    return 1; // Start Game
-                } else if (event.key.code == sf::Keyboard::Num2) {
-                    return 2; // View Scoreboard
-                } else if (event.key.code == sf::Keyboard::Num3) {
-                    window.close(); // Exit
+                    return 1;
+                }
+                else if (event.key.code == sf::Keyboard::Num2) {
+                    return 2;
+                }
+                else if (event.key.code == sf::Keyboard::Num3) {
+                    window.close();
                     return 3;
                 }
             }
@@ -57,12 +57,9 @@ int showWelcomeScreen(sf::RenderWindow& window) {
     return 3;
 }
 
-
 std::string enterPlayerName(sf::RenderWindow& window) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
-        throw std::runtime_error("Unable to load font!");
-    }
+    font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
     sf::Text prompt("Enter your name:", font, 30);
     prompt.setFillColor(sf::Color::White);
@@ -176,24 +173,38 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
     scoreboardTitle.setFillColor(sf::Color::Yellow);
     scoreboardTitle.setPosition(WIDTH / 2 - scoreboardTitle.getGlobalBounds().width / 2, HEIGHT / 10);
 
+    int highestScore = 0;
+    if (!scoreboard.getTopScores(1).empty()) {
+        highestScore = scoreboard.getTopScores(1)[0].score;
+    }
+    int winningScore = highestScore + 1;
+
+    sf::Text winCondition("To win, reach at least a score of " + std::to_string(winningScore), font, 25);
+    winCondition.setFillColor(sf::Color::White);
+    winCondition.setPosition(WIDTH / 4, HEIGHT / 6);
+
+    sf::Text totalPlayers("Total Players: " + std::to_string(scoreboard.getTotalPlayers()), font, 25);
+    totalPlayers.setFillColor(sf::Color::White);
+    totalPlayers.setPosition(WIDTH / 4, HEIGHT / 6 + 40);
+
     window.clear(sf::Color(20, 20, 50));
     window.draw(scoreboardTitle);
+    window.draw(winCondition);
+    window.draw(totalPlayers);
 
     int y_offset = HEIGHT / 4;
     int count = 1;
 
-    // Display top 3 scores with highlighted color
     for (const auto& score : scoreboard.getTopScores(3)) {
         std::string scoreText = std::to_string(count) + ". " + score.name + " - " + std::to_string(score.score);
         sf::Text scoreEntry(scoreText, font, 30);
-        scoreEntry.setFillColor(sf::Color::Cyan);  // Highlight color for top scores
+        scoreEntry.setFillColor(sf::Color::Cyan);
         scoreEntry.setPosition(WIDTH / 4, y_offset);
         window.draw(scoreEntry);
         y_offset += 50;
         count++;
     }
 
-    // Show the current game's rank if it’s not in the top 3
     int playerRank = scoreboard.getRank(playerName, playerScore);
     if (playerRank > 3) {
         std::string playerRankText = "Your rank: " + std::to_string(playerRank) + ". " + playerName + " - " + std::to_string(playerScore);
@@ -216,7 +227,7 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
-                return;  // Return to welcome screen
+                return;
             }
         }
     }

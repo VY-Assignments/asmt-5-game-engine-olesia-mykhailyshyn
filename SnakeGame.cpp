@@ -13,7 +13,6 @@ int main() {
         if (choice == 3 || !window.isOpen()) return 0;
 
         if (choice == 2) {
-            // Call showScoreboard with empty player data since we're only viewing the scoreboard
             showScoreboard(window, "", 0);
             continue;
         }
@@ -26,7 +25,6 @@ int main() {
             game.run(window);
 
             if (window.isOpen()) {
-                // Pass the player's name and final score to display on the scoreboard
                 showScoreboard(window, playerName, game.getFinalScore());
                 showGameOverScreen(window);
             }

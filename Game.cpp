@@ -39,7 +39,8 @@ void Game::update() {
         if (snake.getSize() > 1) {
             snake.shrinkSnake();
             poisonousFood.respawn();
-        } else {
+        }
+        else {
             scoreboard.saveScore(playerName, snake.getSize());
             gameOver = true;
         }
@@ -105,5 +106,5 @@ void Game::drawGrid(sf::RenderWindow& window) {
 }
 
 int Game::getFinalScore() const {
-    return snake.getSize();  // Returns the final score as the snake's size
+    return snake.getSize();
 }
