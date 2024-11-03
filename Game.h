@@ -15,21 +15,17 @@ public:
     void run(sf::RenderWindow& window);
     [[nodiscard]] int getFinalScore() const;
 
+    Snake snake;
+    Weather weather;
+    std::vector<sf::CircleShape> shadows;
+    std::vector<std::unique_ptr<Food>> foods;
+
 private:
     void update();
-    void render(sf::RenderWindow& window);
     void handleCommand(Command command);
-    static void drawGrid(sf::RenderWindow& window);
-
     void maintainFoodCount();
     void respawnAllFood();
     void updateShadows();
-    void drawShadows(sf::RenderWindow& window);
-
-    Snake snake;
-    std::vector<std::unique_ptr<Food>> foods;
-    std::vector<sf::CircleShape> shadows;
-    Weather weather;
 
     std::string playerName;
     bool gameOver = false;

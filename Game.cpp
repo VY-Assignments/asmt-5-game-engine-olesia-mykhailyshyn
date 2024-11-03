@@ -1,4 +1,5 @@
 #include "Game.h"
+#include "GameRenderer.h"
 #include "FoodFactory.h"
 #include <iostream>
 
@@ -24,6 +25,7 @@ Game::Game(const std::string& playerName) : playerName(playerName) {
 }
 
 void Game::run(sf::RenderWindow& window) {
+    GameRenderer renderer(*this);
     window.setFramerateLimit(8);
 
     while (window.isOpen() && !gameOver) {
@@ -46,12 +48,11 @@ void Game::run(sf::RenderWindow& window) {
         }
 
         update();
-        render(window);
+        renderer.render(window);  
     }
 
     Scoreboard::getInstance().saveScore(playerName, snake.getSize());
 }
-
 
 int Game::getFinalScore() const {
     return snake.getSize();
@@ -69,12 +70,10 @@ void Game::update() {
             if (dynamic_cast<NormalFood*>(it->get())) {
                 snake.growSnake();
                 snake.setFirstFoodEaten();
-            }
-            else if (dynamic_cast<PoisonousFood*>(it->get())) {
+            } else if (dynamic_cast<PoisonousFood*>(it->get())) {
                 if (snake.getSize() > 1) {
                     snake.shrinkSnake();
-                }
-                else {
+                } else {
                     Scoreboard::getInstance().saveScore(playerName, snake.getSize());
                     gameOver = true;
                     return;
@@ -135,20 +134,6 @@ void Game::respawnAllFood() {
     }
 }
 
-void Game::render(sf::RenderWindow& window) {
-    window.clear(sf::Color(20, 20, 50));
-    drawGrid(window);
-    snake.draw(window);
-
-    for (const auto& food : foods) {
-        food->draw(window);
-    }
-
-    drawShadows(window);
-    weather.render(window);
-    window.display();
-}
-
 void Game::handleCommand(Command command) {
     switch (command) {
         case Command::MoveUp:
@@ -171,24 +156,6 @@ void Game::handleCommand(Command command) {
     }
 }
 
-void Game::drawGrid(sf::RenderWindow& window) {
-    const int WIDTH = 1500;
-    const int HEIGHT = 1000;
-    const int SIZE = 50;  // Increased cell size
-
-    for (int x = 0; x < WIDTH; x += SIZE) {
-        for (int y = 0; y < HEIGHT; y += SIZE) {
-            sf::RectangleShape cell(sf::Vector2f(SIZE, SIZE));
-            cell.setPosition(x, y);
-            cell.setFillColor(sf::Color::Transparent);
-            cell.setOutlineThickness(1);
-            cell.setOutlineColor(sf::Color(75, 0, 130));
-            window.draw(cell);
-        }
-    }
-}
-
-
 void Game::updateShadows() {
     if (shadowTimer.getElapsedTime() >= shadowUpdateInterval) {
         for (auto& shadow : shadows) {
@@ -204,11 +171,5 @@ void Game::updateShadows() {
             shadow.setFillColor(sf::Color(0, 0, 0, opacity));
         }
         shadowTimer.restart();
-    }
-}
-
-void Game::drawShadows(sf::RenderWindow& window) {
-    for (const auto& shadow : shadows) {
-        window.draw(shadow);
     }
 }
