@@ -1,19 +1,19 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Snake.h"
+#include "Food.h"
+#include "Scoreboard.h"
+#include "InputHandler.h"
+#include "Weather.h"
 #include <vector>
 #include <string>
 #include <memory>
-#include "Snake.h"
-#include "Food.h"
-#include "FoodFactory.h"
-#include "Scoreboard.h"
-#include "InputHandler.h"
 
 class Game {
 public:
     explicit Game(const std::string& playerName);
     void run(sf::RenderWindow& window);
-    int getFinalScore() const;
+    [[nodiscard]] int getFinalScore() const;
 
 private:
     void update();
@@ -29,11 +29,12 @@ private:
     Snake snake;
     std::vector<std::unique_ptr<Food>> foods;
     std::vector<sf::CircleShape> shadows;
+    Weather weather;
 
     std::string playerName;
     bool gameOver = false;
     const int maxFoodCount = 7;
     sf::Clock foodRespawnTimer;
-    sf::Time shadowUpdateInterval = sf::seconds(5);
     sf::Clock shadowTimer;
+    sf::Time shadowUpdateInterval = sf::seconds(5);
 };

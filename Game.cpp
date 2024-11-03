@@ -24,7 +24,7 @@ Game::Game(const std::string& playerName) : playerName(playerName) {
 }
 
 void Game::run(sf::RenderWindow& window) {
-    window.setFramerateLimit(10);
+    window.setFramerateLimit(8);
 
     while (window.isOpen() && !gameOver) {
         sf::Event event{};
@@ -37,12 +37,21 @@ void Game::run(sf::RenderWindow& window) {
             }
         }
 
+        weather.update();
+
+        if (weather.getCurrentWeather() == WeatherType::Rain) {
+            window.setFramerateLimit(12);
+        } else {
+            window.setFramerateLimit(8);
+        }
+
         update();
         render(window);
     }
 
     Scoreboard::getInstance().saveScore(playerName, snake.getSize());
 }
+
 
 int Game::getFinalScore() const {
     return snake.getSize();
@@ -60,18 +69,19 @@ void Game::update() {
             if (dynamic_cast<NormalFood*>(it->get())) {
                 snake.growSnake();
                 snake.setFirstFoodEaten();
-            } else if (dynamic_cast<PoisonousFood*>(it->get())) {
+            }
+            else if (dynamic_cast<PoisonousFood*>(it->get())) {
                 if (snake.getSize() > 1) {
                     snake.shrinkSnake();
-                } else {
+                }
+                else {
                     Scoreboard::getInstance().saveScore(playerName, snake.getSize());
                     gameOver = true;
                     return;
                 }
             }
             it = foods.erase(it);
-        }
-        else {
+        } else {
             ++it;
         }
     }
@@ -110,11 +120,11 @@ void Game::maintainFoodCount() {
     }
 
     while (normalFoodCount < 3) {
-        foods.push_back(FoodFactory::createFood(FoodType::Normal, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\normal.png"));
+        foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
         ++normalFoodCount;
     }
     while (poisonousFoodCount < 4) {
-        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\poisonous.png"));
+        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"));
         ++poisonousFoodCount;
     }
 }
@@ -135,6 +145,7 @@ void Game::render(sf::RenderWindow& window) {
     }
 
     drawShadows(window);
+    weather.render(window);
     window.display();
 }
 
@@ -163,7 +174,7 @@ void Game::handleCommand(Command command) {
 void Game::drawGrid(sf::RenderWindow& window) {
     const int WIDTH = 1500;
     const int HEIGHT = 1000;
-    const int SIZE = 50;
+    const int SIZE = 50;  // Increased cell size
 
     for (int x = 0; x < WIDTH; x += SIZE) {
         for (int y = 0; y < HEIGHT; y += SIZE) {
@@ -176,6 +187,7 @@ void Game::drawGrid(sf::RenderWindow& window) {
         }
     }
 }
+
 
 void Game::updateShadows() {
     if (shadowTimer.getElapsedTime() >= shadowUpdateInterval) {
