@@ -43,7 +43,6 @@ void PoisonousFood::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 }
 
-// Реалізація MovingFood
 MovingFood::MovingFood(const std::string& textureFile) {
     texture.loadFromFile(textureFile);
     sprite.setTexture(texture);
@@ -60,11 +59,9 @@ void MovingFood::respawn() {
 }
 
 void MovingFood::move() {
-    // Переміщуємо їжу на випадкову позицію
-    position.x += ((std::rand() % 3) - 1) * 50;  // Рух вліво, вправо або залишитися
-    position.y += ((std::rand() % 3) - 1) * 50;  // Рух вгору, вниз або залишитися
+    position.x += ((std::rand() % 3) - 1) * 50;
+    position.y += ((std::rand() % 3) - 1) * 50;
 
-    // Переконуємося, що позиція їжі залишається в межах екрану
     position.x = std::max(0.f, std::min(position.x, 1500.f - 50));
     position.y = std::max(0.f, std::min(position.y, 1000.f - 50));
 }
@@ -74,7 +71,6 @@ void MovingFood::draw(sf::RenderWindow& window) {
     window.draw(sprite);
 }
 
-// Реалізація TimedFood
 TimedFood::TimedFood(const std::string& textureFile) {
     texture.loadFromFile(textureFile);
     sprite.setTexture(texture);
@@ -88,7 +84,7 @@ TimedFood::TimedFood(const std::string& textureFile) {
 void TimedFood::respawn() {
     position.x = (std::rand() % (1500 / 50)) * 50;
     position.y = (std::rand() % (1000 / 50)) * 50;
-    lifespanClock.restart();  // Перезапускаємо таймер життя їжі
+    lifespanClock.restart();
 }
 
 bool TimedFood::shouldDespawn() const {

@@ -14,10 +14,9 @@ int main() {
         if (choice == 3 || !window.isOpen()) return 0;
 
         if (choice == 2) {
-            // Access the singleton instance to load scores before showing the scoreboard
             Scoreboard& scoreboard = Scoreboard::getInstance();
-            scoreboard.loadScores();  // Ensure scores are loaded
-            showScoreboard(window, "", 0);  // Display the scoreboard screen
+            scoreboard.loadScores();
+            showScoreboard(window, "", 0);  
             continue;
         }
 
@@ -26,7 +25,7 @@ int main() {
             if (playerName.empty()) continue;
 
             Game game(playerName);
-            game.run(window);  // Play the game
+            game.run(window);
 
             if (window.isOpen()) {
                 showScoreboard(window, playerName, game.getFinalScore());

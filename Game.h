@@ -40,4 +40,6 @@ private:
 
     sf::Clock foodSpawnTimer;
     const sf::Time foodSpawnInterval = sf::seconds(5);
+
+    const int maxFoodCount = 10;  // Максимальна кількість їжі на екрані
 };

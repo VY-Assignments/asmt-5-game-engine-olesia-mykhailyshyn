@@ -5,11 +5,9 @@
 Game::Game(const std::string& playerName) : playerName(playerName) {
     gameOver = false;
 
-    // Ініціалізуємо початкову їжу за допомогою фабрики
-    foods.push_back(FoodFactory::createFood(FoodType::Normal, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\normal.png"));
-    foods.push_back(FoodFactory::createFood(FoodType::Poisonous, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\poisonous.png"));
+    foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
+    foods.push_back(FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"));
 
-    // Ініціалізація тіней
     for (int i = 0; i < 5; ++i) {
         sf::CircleShape shadow(150);
         shadow.setFillColor(sf::Color(0, 0, 0, 200));
@@ -51,7 +49,6 @@ void Game::update() {
 
     bool foodEaten = false;
 
-    // Перевірка зіткнення з кожною їжею
     for (auto it = foods.begin(); it != foods.end();) {
         if (snake.getHeadPosition() == (*it)->getPosition()) {
             foodEaten = true;
@@ -59,28 +56,31 @@ void Game::update() {
             if (dynamic_cast<NormalFood*>(it->get())) {
                 snake.growSnake();
                 snake.setFirstFoodEaten();
-            } else {
+            }
+            else {
                 if (snake.getSize() > 1) {
                     snake.shrinkSnake();
-                } else {
+                }
+                else {
                     Scoreboard::getInstance().saveScore(playerName, snake.getSize());
                     gameOver = true;
                     return;
                 }
             }
             it = foods.erase(it);
-        } else {
+        }
+        else {
             ++it;
         }
     }
 
-    if (foodEaten) {
-        foods.push_back(FoodFactory::createFood(FoodType::Normal, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\normal.png"));
-        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\poisonous.png"));
+    if (foodEaten && foods.size() < maxFoodCount) {
+        foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
+        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"));
     }
 
-    if (foodSpawnTimer.getElapsedTime() >= foodSpawnInterval) {
-        foods.push_back(FoodFactory::createFood(FoodType::Normal, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\normal.png"));
+    if (foodSpawnTimer.getElapsedTime() >= foodSpawnInterval && foods.size() < maxFoodCount) {
+        foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
         foodSpawnTimer.restart();
     }
 
@@ -169,10 +169,16 @@ void Game::drawGrid(sf::RenderWindow& window) {
 void Game::updateShadows() {
     if (shadowTimer.getElapsedTime() >= shadowUpdateInterval) {
         for (auto& shadow : shadows) {
+            float newSize = static_cast<float>((std::rand() % 200) + 100);
+            shadow.setRadius(newSize);
+
             shadow.setPosition(
                     std::rand() % (1500 - static_cast<int>(shadow.getRadius()) * 2),
                     std::rand() % (1000 - static_cast<int>(shadow.getRadius()) * 2)
             );
+
+            int opacity = (std::rand() % 100) + 150;
+            shadow.setFillColor(sf::Color(0, 0, 0, opacity));
         }
         shadowTimer.restart();
     }
