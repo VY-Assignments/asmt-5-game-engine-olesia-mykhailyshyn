@@ -182,7 +182,7 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
     int y_offset = HEIGHT / 4;
     int count = 1;
 
-    // Display top 3 scores with a highlighted color
+    // Display top 3 scores with highlighted color
     for (const auto& score : scoreboard.getTopScores(3)) {
         std::string scoreText = std::to_string(count) + ". " + score.name + " - " + std::to_string(score.score);
         sf::Text scoreEntry(scoreText, font, 30);
@@ -193,7 +193,7 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
         count++;
     }
 
-    // Get the current game's rank and display it separately
+    // Show the current game's rank if it’s not in the top 3
     int playerRank = scoreboard.getRank(playerName, playerScore);
     if (playerRank > 3) {
         std::string playerRankText = "Your rank: " + std::to_string(playerRank) + ". " + playerName + " - " + std::to_string(playerScore);
