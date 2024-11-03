@@ -1,78 +1,93 @@
 #include "Game.h"
-#include "Input.h"
-#include <cstdlib>
-#include <memory>
 #include <iostream>
 
-Game::Game(sf::RenderWindow& window)
-        : board(40, 40, window),
-          snake("C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/Head.png",
-                "C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/BodyBlock.png"),
-          state(State::RUNNING),
-          normalFood(std::make_unique<NormalFood>()),
-          poisonousFood(std::make_unique<PoisonousFood>()),
-          scoreboard("scoreboard.txt")
-{
-    createNewFood();
+Game::Game(const std::string& playerName) : playerName(playerName) {
+    gameOver = false;
 }
 
-void Game::run() {
-    if (state == State::GAME_OVER) {
-        scoreboard.save();
-        return;
-    }
+void Game::run(sf::RenderWindow& window) {
+    window.setFramerateLimit(10);
 
-    handleInput();
+    while (window.isOpen() && !gameOver) {
+        sf::Event event;
+        while (window.pollEvent(event)) {
+            if (event.type == sf::Event::Closed)
+                window.close();
+            else {
+                Command command = inputHandler.handleInput(event);
+                handleCommand(command);
+            }
+        }
+
+        update();
+        render(window);
+    }
+}
+
+void Game::update() {
     snake.move();
 
-    // Check food interactions
-    if (snake.getHeadPosition() == normalFood->getPosition()) {
-        snake.grow();
-        createNewFood();
-    } else if (snake.getHeadPosition() == poisonousFood->getPosition()) {
-        if (snake.getSize() > 1) {
-            snake.shrink();
-            createNewFood();
+    if (snake.getHeadPosition() == normalFood.getPosition()) {
+        snake.growSnake();
+        normalFood.respawn();
+        snake.setFirstFoodEaten();
+    }
+
+    if (snake.getHeadPosition() == poisonousFood.getPosition()) {
+        if (snake.getSize() == 1) {
+            scoreboard.saveScore(playerName, snake.getSize());
+            gameOver = true;
         } else {
-            state = State::GAME_OVER;
+            snake.shrinkSnake();
+            poisonousFood.respawn();
         }
     }
 
-    if (snake.hasCollidedWithItself()) {
-        state = State::GAME_OVER;
+    if (snake.checkCollision()) {
+        scoreboard.saveScore(playerName, snake.getSize());
+        gameOver = true;
+    }
+
+    if (snake.reachedMaxSize()) {
+        scoreboard.saveScore(playerName, snake.getSize());
+        std::cout << "Congratulations! You reached the maximum size!" << std::endl;
+        gameOver = true;
     }
 }
 
-
-void Game::createNewFood() {
-    normalFood->setPosition(rand() % board.getWidth(), rand() % board.getHeight());
-    poisonousFood->setPosition(rand() % board.getWidth(), rand() % board.getHeight());
+void Game::render(sf::RenderWindow& window) {
+    window.clear(sf::Color(20, 20, 50));
+    drawGrid(window);  // Call drawGrid to draw the grid on the window
+    snake.draw(window);
+    normalFood.draw(window);
+    poisonousFood.draw(window);
+    window.display();
 }
 
-void Game::handleInput() {
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        snake.setDirection(Snake::Direction::Up);
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        snake.setDirection(Snake::Direction::Down);
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        snake.setDirection(Snake::Direction::Left);
-    } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        snake.setDirection(Snake::Direction::Right);
+void Game::handleCommand(Command command) {
+    switch (command) {
+        case Command::MoveUp: snake.changeDirection(Up); break;
+        case Command::MoveDown: snake.changeDirection(Down); break;
+        case Command::MoveLeft: snake.changeDirection(Left); break;
+        case Command::MoveRight: snake.changeDirection(Right); break;
+        case Command::Confirm: gameOver = true; break;
+        default: break;
     }
 }
 
-void Game::saveScore() {
-    scoreboard.addPlayer({"Player", snake.getScore()});
-    if (!scoreboard.save()) {
-        std::cout << "Score saving failed." << std::endl;
+void Game::drawGrid(sf::RenderWindow& window) {
+    const int WIDTH = 1500;
+    const int HEIGHT = 1000;
+    const int SIZE = 50;
+
+    for (int x = 0; x < WIDTH; x += SIZE) {
+        for (int y = 0; y < HEIGHT; y += SIZE) {
+            sf::RectangleShape cell(sf::Vector2f(SIZE, SIZE));
+            cell.setPosition(x, y);
+            cell.setFillColor(sf::Color::Transparent);
+            cell.setOutlineThickness(1);
+            cell.setOutlineColor(sf::Color(75, 0, 130));
+            window.draw(cell);
+        }
     }
-}
-
-
-void Game::draw() {
-    board.clear();
-    board.draw();
-    snake.draw(board.getWindow());
-    normalFood->draw(board.getWindow());
-    poisonousFood->draw(board.getWindow());
 }

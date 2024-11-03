@@ -1,43 +1,44 @@
-#include "Point.h"
 #include "Food.h"
-#include <SFML/Graphics.hpp>
 #include <stdexcept>
 
-Food::Food() : position(0, 0) {}
+void Food::respawn() {}
 
-Point Food::getPosition() const {
-    return position;
-}
-
-void Food::setPosition(int x, int y) {
-    position.setPoint(x, y);
-}
-
-NormalFood::NormalFood() {
-    setPosition(rand() % 40, rand() % 40);
-    if (!texture.loadFromFile("C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/normal.png")) {
-        throw std::runtime_error("Failed to load normal food texture");
-    }
-}
-
-void NormalFood::draw(sf::RenderWindow &window) const {
-    sf::Sprite sprite;
+NormalFood::NormalFood(const std::string& textureFile) {
+    texture.loadFromFile(textureFile);
     sprite.setTexture(texture);
-    sprite.setScale(10.f / texture.getSize().x, 10.f / texture.getSize().y);
-    sprite.setPosition(position.getX() * 10, position.getY() * 10);
+    sprite.setScale(
+            static_cast<float>(50) / texture.getSize().x,
+            static_cast<float>(50) / texture.getSize().y
+    );
+    respawn();
+}
+
+void NormalFood::respawn() {
+    position.x = (std::rand() % (1500 / 50)) * 50;
+    position.y = (std::rand() % (1000 / 50)) * 50;
+}
+
+void NormalFood::draw(sf::RenderWindow& window) {
+    sprite.setPosition(position);
     window.draw(sprite);
 }
 
-PoisonousFood::PoisonousFood() {
-    setPosition(rand() % 40, rand() % 40);
-    if (!texture.loadFromFile("C:/KSE/OOP_design/Assignment_5_6/asmt-5-game-engine-olesia-mykhailyshyn/poisonous.png")) {
-        throw std::runtime_error("Failed to load poisonous food texture");
-    }
-}
-void PoisonousFood::draw(sf::RenderWindow &window) const {
-    sf::Sprite sprite;
+PoisonousFood::PoisonousFood(const std::string& textureFile) {
+    texture.loadFromFile(textureFile);
     sprite.setTexture(texture);
-    sprite.setScale(10.f / texture.getSize().x, 10.f / texture.getSize().y);  // Scale to 10x10 pixels
-    sprite.setPosition(position.getX() * 10, position.getY() * 10);
+    sprite.setScale(
+            static_cast<float>(50) / texture.getSize().x,
+            static_cast<float>(50) / texture.getSize().y
+    );
+    respawn();
+}
+
+void PoisonousFood::respawn() {
+    position.x = (std::rand() % (1500 / 50)) * 50;
+    position.y = (std::rand() % (1000 / 50)) * 50;
+}
+
+void PoisonousFood::draw(sf::RenderWindow& window) {
+    sprite.setPosition(position);
     window.draw(sprite);
 }

@@ -1,30 +1,25 @@
 #pragma once
-#include <vector>
 #include <string>
+#include <vector>
 #include <SFML/Graphics.hpp>
 
-class Player {
-public:
+struct ScoreEntry {
     std::string name;
     int score;
 
-    Player(std::string name, int score) : name(std::move(name)), score(score) {}
-
-    bool operator==(const Player &other) const {
-        return name == other.name && score == other.score;
-    }
+    bool operator<(const ScoreEntry& other) const;
+    friend std::ostream& operator<<(std::ostream& os, const ScoreEntry& entry);
+    friend std::istream& operator>>(std::istream& is, ScoreEntry& entry);
 };
 
 class Scoreboard {
-private:
-    std::string filePath;
-    std::vector<Player> players;
-
 public:
-    explicit Scoreboard(std::string path);
-    bool load();
-    [[nodiscard]] bool save() const;
-    void addPlayer(const Player &player);
-    void display() const;
-    [[nodiscard]] const std::vector<Player>& getScores() const;
+    explicit Scoreboard(const std::string& file);
+    void loadScores();
+    void saveScore(const std::string& name, int score);
+    void display(sf::RenderWindow& window, const std::string& playerName, int playerScore);
+
+private:
+    std::string file;
+    std::vector<ScoreEntry> scores;
 };

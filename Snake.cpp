@@ -1,88 +1,87 @@
 #include "Snake.h"
 
-Snake::Snake(const std::string &headTexturePath, const std::string &bodyTexturePath)
-        : score(0), minSize(1), currentDirection(Direction::Right) {
-
-    headTexture.loadFromFile(headTexturePath);
-    bodyTexture.loadFromFile(bodyTexturePath);
-
-    sf::Sprite headSegment;
-    headSegment.setTexture(headTexture);
-    headSegment.setPosition(20 * 10, 20 * 10);
-    body.push_back(headSegment);
-
-    sf::Sprite bodySegment;
-    bodySegment.setTexture(bodyTexture);
-    bodySegment.setPosition(19 * 10, 20 * 10);
-    body.push_back(bodySegment);
-}
-
-int Snake::getScore() const {
-    return score;
-}
-
-int Snake::getSize() const {
-    return static_cast<int>(body.size());
-}
-
-void Snake::setDirection(Direction newDirection) {
-    currentDirection = newDirection;
+Snake::Snake() : direction(Right), grow(false), size(1), firstFoodEaten(false) {
+    segments.emplace_back( 50, 50 );
 }
 
 void Snake::move() {
-    for (size_t i = body.size() - 1; i > 0; --i) {
-        body[i].setPosition(body[i - 1].getPosition());
-    }
-
-    sf::Vector2f newPos = body[0].getPosition();
-    switch (currentDirection) {
-        case Direction::Up:    newPos.y -= 10; break;
-        case Direction::Down:  newPos.y += 10; break;
-        case Direction::Left:  newPos.x -= 10; break;
-        case Direction::Right: newPos.x += 10; break;
-    }
-    body[0].setPosition(newPos);
-}
-
-void Snake::grow() {
-    sf::Sprite newSegment;
-    newSegment.setTexture(bodyTexture);
-    newSegment.setPosition(body.back().getPosition());
-    body.push_back(newSegment);
-    score++;  // Increment score when the snake grows
-}
-
-void Snake::shrink() {
-    if (body.size() > minSize) {
-        body.pop_back();
-        score--;  // Decrement score when the snake shrinks
-    }
-}
-
-void Snake::applyFoodEffect(const Food& food) {
-    if (food.isPoisonous()) {
-        shrink();
-    } else {
-        grow();
-    }
-}
-
-Point Snake::getHeadPosition() const {
-    sf::Vector2f pos = body[0].getPosition();
-    return Point(static_cast<int>(pos.x / 10), static_cast<int>(pos.y / 10));
-}
-
-bool Snake::hasCollidedWithItself() const {
-    for (size_t i = 1; i < body.size(); ++i) {
-        if (body[0].getGlobalBounds().intersects(body[i].getGlobalBounds())) {
-            return true;
+    sf::Vector2f nextPosition = segments[0];
+    switch (direction) {
+        case Up:    {
+            nextPosition.y -= 50; break;
+        }
+        case Down:  {
+            nextPosition.y += 50; break;
+        }
+        case Left:  {
+            nextPosition.x -= 50; break;
+        }
+        case Right: {
+            nextPosition.x += 50; break;
         }
     }
-    return false;
+
+    if (nextPosition.x < 0) {
+        nextPosition.x = 1500 - 50;
+    }
+    else if (nextPosition.x >= 1500) {
+        nextPosition.x = 0;
+    }
+    if (nextPosition.y < 0) {
+        nextPosition.y = 1000 - 50;
+    }
+    else if (nextPosition.y >= 1000) {
+        nextPosition.y = 0;
+    }
+
+    if (grow) {
+        segments.insert(segments.begin(), nextPosition);
+        grow = false;
+    }
+    else {
+        segments.insert(segments.begin(), nextPosition);
+        segments.pop_back();
+    }
 }
 
-void Snake::draw(sf::RenderWindow &window) const {
-    for (const auto &segment : body) {
-        window.draw(segment);
+void Snake::growSnake() { grow = true; }
+
+void Snake::shrinkSnake() {
+    if (segments.size() > 1) segments.pop_back();
+}
+
+bool Snake::reachedMaxSize() const { return size >= 200; }
+
+sf::Vector2f Snake::getHeadPosition() const { return segments[0]; }
+
+int Snake::getSize() const { return size; }
+
+void Snake::draw(sf::RenderWindow& window) {
+    sf::RectangleShape segmentShape(sf::Vector2f(50, 50));
+    segmentShape.setFillColor(sf::Color(128, 0, 128));
+    for (const auto& segment : segments) {
+        segmentShape.setPosition(segment);
+        window.draw(segmentShape);
     }
+}
+
+void Snake::changeDirection(Direction newDirection) {
+    if ((direction == Up && newDirection != Down) ||
+        (direction == Down && newDirection != Up) ||
+        (direction == Left && newDirection != Right) ||
+        (direction == Right && newDirection != Left)) {
+        direction = newDirection;
+    }
+}
+
+void Snake::setFirstFoodEaten() {
+    firstFoodEaten = true;
+}
+
+bool Snake::checkCollision() const {
+    sf::Vector2f headPosition = segments[0];
+    for (size_t i = 1; i < segments.size(); i++) {
+        if (segments[i] == headPosition) return true;
+    }
+    return false;
 }

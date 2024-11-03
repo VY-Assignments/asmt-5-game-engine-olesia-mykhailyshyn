@@ -1,61 +1,51 @@
 #include "Scoreboard.h"
-#include <iostream>
 #include <fstream>
+#include <algorithm>
 #include <sstream>
+#include <iostream>
 
-Scoreboard::Scoreboard(std::string path) : filePath(std::move(path)) {}
+Scoreboard::Scoreboard(const std::string& file)
+        : file(file) {}
 
-bool Scoreboard::load() {
-    std::ifstream file(filePath);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open the file: " << filePath << std::endl;
-        return false;
+void Scoreboard::loadScores() {
+    scores.clear();
+    std::ifstream fileStream(file);
+    if (!fileStream.is_open()) {
+        std::cerr << "Error: Could not open score file for reading.\n";
+        return;
     }
 
-    players.clear();
-    std::string line;
-    while (std::getline(file, line)) {
-        std::istringstream iss(line);
-        std::string name;
-        int score;
-        if (!(iss >> name >> score)) {
-            std::cerr << "Invalid data format in file." << std::endl;
-            players.clear();
-            return false;
-        }
-        players.emplace_back(name, score);
+    ScoreEntry entry;
+    while (fileStream >> entry) {
+        scores.push_back(entry);
     }
-
-    file.close();
-    return true;
+    fileStream.close();
+    std::sort(scores.begin(), scores.end());
 }
 
-bool Scoreboard::save() const {
-    std::ofstream file(filePath);
-    if (!file.is_open()) {
-        std::cerr << "Failed to open the file: " << filePath << std::endl;
-        return false;
-    }
+void Scoreboard::saveScore(const std::string& name, int score) {
+    loadScores();
+    scores.push_back({ name, score });
+    std::sort(scores.begin(), scores.end());
 
-    for (const auto &player : players) {
-        file << player.name << " " << player.score << "\n";
+    std::ofstream fileStream(file);
+    for (const auto& entry : scores) {
+        fileStream << entry.name << "-" << entry.score << "\n";
     }
-
-    file.close();
-    return true;
+    fileStream.close();
 }
 
-void Scoreboard::addPlayer(const Player &player) {
-    players.push_back(player);
+bool ScoreEntry::operator<(const ScoreEntry& other) const {
+    return score > other.score; // Sort from highest to lowest
 }
 
-void Scoreboard::display() const {
-    std::cout << "--- Player Rankings ---" << std::endl;
-    for (const auto &player : players) {
-        std::cout << "Name: " << player.name << ", Score: " << player.score << std::endl;
-    }
+std::ostream& operator<<(std::ostream& os, const ScoreEntry& entry) {
+    os << entry.name << "-" << entry.score;
+    return os;
 }
 
-const std::vector<Player>& Scoreboard::getScores() const {
-    return players;
+std::istream& operator>>(std::istream& is, ScoreEntry& entry) {
+    std::getline(is, entry.name, '-');
+    is >> entry.score;
+    return is;
 }

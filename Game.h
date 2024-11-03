@@ -1,31 +1,26 @@
 #pragma once
 #include <SFML/Graphics.hpp>
-#include <memory>
-#include "Board.h"
 #include "Snake.h"
 #include "Food.h"
 #include "Scoreboard.h"
+#include "InputHandler.h"
 
 class Game {
 public:
-    Game(sf::RenderWindow &window);
-    void run();
-    void handleInput();
-    void draw();
-
-    bool gameOver() const { return state == State::GAME_OVER; }
-    int getScore() const { return snake.getScore(); }  // Updated to use snake's getScore
+    explicit Game(const std::string& playerName);
+    void run(sf::RenderWindow& window);
 
 private:
-    void createNewFood();
-    void saveScore();  // Ensure this method is declared
+    void update();
+    void render(sf::RenderWindow& window);
+    void handleCommand(Command command);
+    static void drawGrid(sf::RenderWindow& window);
 
-    enum class State { RUNNING, GAME_OVER };
-    State state;
-
-    Board board;
     Snake snake;
-    std::unique_ptr<NormalFood> normalFood;
-    std::unique_ptr<PoisonousFood> poisonousFood;
-    Scoreboard scoreboard;
+    NormalFood normalFood{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"};
+    PoisonousFood poisonousFood{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"};
+    Scoreboard scoreboard{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)"};
+    InputHandler inputHandler;
+    std::string playerName;
+    bool gameOver = false;
 };

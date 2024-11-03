@@ -1,31 +1,27 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include "Point.h"
-#include "Food.h"
+
+enum Direction { Up, Down, Left, Right };
 
 class Snake {
 public:
-    enum class Direction { Up, Down, Left, Right };
-
-    Snake(const std::string &headTexturePath, const std::string &bodyTexturePath);
-
-    int getScore() const;
-    int getSize() const;
-    void setDirection(Direction newDirection);
+    Snake();
     void move();
-    void grow();
-    void shrink();
-    void draw(sf::RenderWindow &window) const;
-    bool hasCollidedWithItself() const;
-    Point getHeadPosition() const;
-    void applyFoodEffect(const Food& food);
+    void growSnake();
+    void shrinkSnake();
+    void changeDirection(Direction newDirection);
+    [[nodiscard]] bool checkCollision() const;
+    [[nodiscard]] bool reachedMaxSize() const;
+    [[nodiscard]] sf::Vector2f getHeadPosition() const;
+    void setFirstFoodEaten();
+    [[nodiscard]] int getSize() const;
+    void draw(sf::RenderWindow& window);
 
 private:
-    int score;
-    int minSize;
-    std::vector<sf::Sprite> body;   // Changed to hold sf::Sprite for each body segment
-    Direction currentDirection;
-    sf::Texture headTexture;
-    sf::Texture bodyTexture;
+    std::vector<sf::Vector2f> segments;
+    Direction direction;
+    bool grow;
+    int size;
+    bool firstFoodEaten;
 };
