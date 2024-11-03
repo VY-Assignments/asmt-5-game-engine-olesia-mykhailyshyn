@@ -9,17 +9,24 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1500, 1000), "Snake Game");
 
     while (window.isOpen()) {
-        showWelcomeScreen(window);
-        if (!window.isOpen()) return 0;
+        int choice = showWelcomeScreen(window);
+        if (choice == 3 || !window.isOpen()) return 0;
 
-        std::string playerName = enterPlayerName(window);
-        if (playerName.empty()) continue;
+        if (choice == 2) {
+            showScoreboard(window);
+            continue;
+        }
 
-        Game game(playerName);
-        game.run(window);
+        if (choice == 1) {
+            std::string playerName = enterPlayerName(window);
+            if (playerName.empty()) continue;
 
-        if (window.isOpen()) {
-            showGameOverScreen(window);
+            Game game(playerName);
+            game.run(window);
+
+            if (window.isOpen()) {
+                showGameOverScreen(window);
+            }
         }
     }
 

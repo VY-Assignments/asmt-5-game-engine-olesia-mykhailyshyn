@@ -17,9 +17,8 @@ public:
     explicit Scoreboard(const std::string& file);
     void loadScores();
     void saveScore(const std::string& name, int score);
-    void display(sf::RenderWindow& window, const std::string& playerName, int playerScore);
 
+    std::vector<ScoreEntry> scores;
 private:
     std::string file;
-    std::vector<ScoreEntry> scores;
 };

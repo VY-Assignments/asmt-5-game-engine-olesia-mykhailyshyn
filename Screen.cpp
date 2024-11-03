@@ -3,13 +3,12 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
-#include "Scoreboard.h" // To access Scoreboard functions
+#include "Scoreboard.h"
 
 const int WIDTH = 1500;
 const int HEIGHT = 1000;
-const int SIZE = 50;
 
-void showWelcomeScreen(sf::RenderWindow& window) {
+int showWelcomeScreen(sf::RenderWindow& window) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
         throw std::runtime_error("Unable to load font!");
@@ -38,11 +37,12 @@ void showWelcomeScreen(sf::RenderWindow& window) {
                 window.close();
             } else if (event.type == sf::Event::KeyPressed) {
                 if (event.key.code == sf::Keyboard::Num1) {
-                    return; // Proceed to name input
+                    return 1; // Start Game
                 } else if (event.key.code == sf::Keyboard::Num2) {
-                    showScoreboard(window, "N/A", 0); // Show scoreboard
+                    return 2; // View Scoreboard
                 } else if (event.key.code == sf::Keyboard::Num3) {
-                    window.close(); // Exit game
+                    window.close(); // Exit
+                    return 3;
                 }
             }
         }
@@ -54,7 +54,9 @@ void showWelcomeScreen(sf::RenderWindow& window) {
         window.draw(option3);
         window.display();
     }
+    return 3; // Default to exit if window closes
 }
+
 
 std::string enterPlayerName(sf::RenderWindow& window) {
     sf::Font font;
@@ -74,7 +76,7 @@ std::string enterPlayerName(sf::RenderWindow& window) {
     instruction.setFillColor(sf::Color::White);
     instruction.setPosition(WIDTH / 2 - instruction.getGlobalBounds().width / 2, HEIGHT / 3 + 150);
 
-    std::string playerName;
+    std::string playerName = "";
     sf::Text playerNameText("", font, 30);
     playerNameText.setFillColor(sf::Color::Yellow);
     playerNameText.setPosition(WIDTH / 2 - 100, HEIGHT / 3 + 50);
@@ -84,6 +86,10 @@ std::string enterPlayerName(sf::RenderWindow& window) {
     inputBox.setOutlineColor(sf::Color::White);
     inputBox.setOutlineThickness(2);
     inputBox.setPosition(WIDTH / 2 - 200, HEIGHT / 3 + 45);
+
+    sf::Event clearEvent;
+    while (window.pollEvent(clearEvent)) {
+    }
 
     while (window.isOpen()) {
         sf::Event event;
@@ -157,9 +163,8 @@ void showGameOverScreen(sf::RenderWindow& window) {
     }
 }
 
-void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int playerScore) {
-    std::vector<ScoreEntry> scores;
-    Scoreboard scoreboard("C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\Scoreboard.txt");
+void showScoreboard(sf::RenderWindow& window) {
+    Scoreboard scoreboard(R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)");
     scoreboard.loadScores();
 
     sf::Font font;
@@ -171,13 +176,12 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
     scoreboardTitle.setFillColor(sf::Color::Yellow);
     scoreboardTitle.setPosition(WIDTH / 2 - scoreboardTitle.getGlobalBounds().width / 2, HEIGHT / 10);
 
-    sf::Text topTitle("Top 3 Players", font, 35);
-    topTitle.setFillColor(sf::Color::White);
-    topTitle.setPosition(WIDTH / 4, HEIGHT / 4);
+    window.clear(sf::Color(20, 20, 50));
+    window.draw(scoreboardTitle);
 
     int y_offset = HEIGHT / 3;
     int count = 1;
-    for (const auto& score : scores) {
+    for (const auto& score : scoreboard.scores) {
         if (count > 3) break;
         std::string scoreText = std::to_string(count) + ". " + score.name + " - " + std::to_string(score.score);
         sf::Text scoreEntry(scoreText, font, 25);
@@ -188,16 +192,20 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
         count++;
     }
 
+    sf::Text instruction("Press Enter to return to the main menu", font, 25);
+    instruction.setFillColor(sf::Color::White);
+    instruction.setPosition(WIDTH / 2 - instruction.getGlobalBounds().width / 2, HEIGHT - 100);
+    window.draw(instruction);
+
     window.display();
 
-    bool exitToMain = false;
-    while (window.isOpen() && !exitToMain) {
+    while (window.isOpen()) {
         sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
             } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
-                exitToMain = true;
+                return; // Return to welcome screen
             }
         }
     }

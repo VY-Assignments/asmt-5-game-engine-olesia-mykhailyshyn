@@ -9,12 +9,12 @@ void Game::run(sf::RenderWindow& window) {
     window.setFramerateLimit(10);
 
     while (window.isOpen() && !gameOver) {
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed)
                 window.close();
             else {
-                Command command = inputHandler.handleInput(event);
+                Command command = InputHandler::handleInput(event);
                 handleCommand(command);
             }
         }
@@ -67,11 +67,21 @@ void Game::render(sf::RenderWindow& window) {
 
 void Game::handleCommand(Command command) {
     switch (command) {
-        case Command::MoveUp: snake.changeDirection(Up); break;
-        case Command::MoveDown: snake.changeDirection(Down); break;
-        case Command::MoveLeft: snake.changeDirection(Left); break;
-        case Command::MoveRight: snake.changeDirection(Right); break;
-        case Command::Confirm: gameOver = true; break;
+        case Command::MoveUp: {
+            snake.changeDirection(Up); break;
+        }
+        case Command::MoveDown: {
+            snake.changeDirection(Down); break;
+        }
+        case Command::MoveLeft: {
+            snake.changeDirection(Left); break;
+        }
+        case Command::MoveRight: {
+            snake.changeDirection(Right); break;
+        }
+        case Command::Confirm: {
+            gameOver = true; break;
+        }
         default: break;
     }
 }

@@ -36,7 +36,7 @@ void Scoreboard::saveScore(const std::string& name, int score) {
 }
 
 bool ScoreEntry::operator<(const ScoreEntry& other) const {
-    return score > other.score; // Sort from highest to lowest
+    return score > other.score;
 }
 
 std::ostream& operator<<(std::ostream& os, const ScoreEntry& entry) {
