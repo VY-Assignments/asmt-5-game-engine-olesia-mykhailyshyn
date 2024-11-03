@@ -56,7 +56,6 @@ void showWelcomeScreen(sf::RenderWindow& window) {
     }
 }
 
-
 std::string enterPlayerName(sf::RenderWindow& window) {
     sf::Font font;
     if (!font.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
@@ -66,6 +65,14 @@ std::string enterPlayerName(sf::RenderWindow& window) {
     sf::Text prompt("Enter your name:", font, 30);
     prompt.setFillColor(sf::Color::White);
     prompt.setPosition(WIDTH / 2 - prompt.getGlobalBounds().width / 2, HEIGHT / 3);
+
+    sf::Text warningMessage("", font, 25);
+    warningMessage.setFillColor(sf::Color::Red);
+    warningMessage.setPosition(WIDTH / 2 - 100, HEIGHT / 3 + 100);
+
+    sf::Text instruction("Press Enter to confirm or 3 to return to main menu", font, 20);
+    instruction.setFillColor(sf::Color::White);
+    instruction.setPosition(WIDTH / 2 - instruction.getGlobalBounds().width / 2, HEIGHT / 3 + 150);
 
     std::string playerName;
     sf::Text playerNameText("", font, 30);
@@ -86,15 +93,24 @@ std::string enterPlayerName(sf::RenderWindow& window) {
             } else if (event.type == sf::Event::TextEntered) {
                 if (event.text.unicode == '\b' && !playerName.empty()) {
                     playerName.pop_back();
-                } else if (event.text.unicode < 128 && event.text.unicode != '\b' && event.text.unicode != '\r') {
+                }
+                else if (event.text.unicode < 128 && event.text.unicode != '\b' && event.text.unicode != '\r') {
                     playerName += static_cast<char>(event.text.unicode);
                 }
                 playerNameText.setString(playerName);
-            } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
-                if (playerName.empty()) {
-                    return ""; // Return empty string to indicate no name was entered
+                warningMessage.setString("");
+            }
+            else if (event.type == sf::Event::KeyPressed) {
+                if (event.key.code == sf::Keyboard::Enter) {
+                    if (playerName.empty()) {
+                        warningMessage.setString("Please enter a name to start the game.");
+                    }
+                    else {
+                        return playerName;
+                    }
+                } else if (event.key.code == sf::Keyboard::Num3) {
+                    return "";
                 }
-                return playerName; // Return the entered name
             }
         }
 
@@ -102,12 +118,13 @@ std::string enterPlayerName(sf::RenderWindow& window) {
         window.draw(prompt);
         window.draw(inputBox);
         window.draw(playerNameText);
+        window.draw(warningMessage);
+        window.draw(instruction);
         window.display();
     }
 
-    return ""; // Default return if window is closed
+    return "";
 }
-
 
 void showGameOverScreen(sf::RenderWindow& window) {
     sf::Font font;

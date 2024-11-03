@@ -10,14 +10,10 @@ int main() {
 
     while (window.isOpen()) {
         showWelcomeScreen(window);
-        if (!window.isOpen()) {
-            return 0;
-        }
+        if (!window.isOpen()) return 0;
 
         std::string playerName = enterPlayerName(window);
-        if (playerName.empty()) {
-            continue;
-        }
+        if (playerName.empty()) continue;
 
         Game game(playerName);
         game.run(window);
