@@ -5,8 +5,12 @@
 Game::Game(const std::string& playerName) : playerName(playerName) {
     gameOver = false;
 
-    foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
-    foods.push_back(FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"));
+    for (int i = 0; i < 3; ++i) {
+        foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
+    }
+    for (int i = 0; i < 4; ++i) {
+        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"));
+    }
 
     for (int i = 0; i < 5; ++i) {
         sf::CircleShape shadow(150);
@@ -56,12 +60,10 @@ void Game::update() {
             if (dynamic_cast<NormalFood*>(it->get())) {
                 snake.growSnake();
                 snake.setFirstFoodEaten();
-            }
-            else {
+            } else if (dynamic_cast<PoisonousFood*>(it->get())) {
                 if (snake.getSize() > 1) {
                     snake.shrinkSnake();
-                }
-                else {
+                } else {
                     Scoreboard::getInstance().saveScore(playerName, snake.getSize());
                     gameOver = true;
                     return;
@@ -74,14 +76,11 @@ void Game::update() {
         }
     }
 
-    if (foodEaten && foods.size() < maxFoodCount) {
-        foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
-        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"));
-    }
+    maintainFoodCount();
 
-    if (foodSpawnTimer.getElapsedTime() >= foodSpawnInterval && foods.size() < maxFoodCount) {
-        foods.push_back(FoodFactory::createFood(FoodType::Normal, R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"));
-        foodSpawnTimer.restart();
+    if (foodRespawnTimer.getElapsedTime().asSeconds() > 5) {
+        respawnAllFood();
+        foodRespawnTimer.restart();
     }
 
     if (snake.checkCollision()) {
@@ -96,22 +95,34 @@ void Game::update() {
     }
 
     updateShadows();
-    updateFood();
 }
 
-void Game::updateFood() {
-    for (auto& food : foods) {
-        if (auto* movingFood = dynamic_cast<MovingFood*>(food.get())) {
-            movingFood->move();
-        }
+void Game::maintainFoodCount() {
+    int normalFoodCount = 0;
+    int poisonousFoodCount = 0;
 
-        if (auto* timedFood = dynamic_cast<TimedFood*>(food.get())) {
-            if (timedFood->shouldDespawn()) {
-                food.reset();
-            }
+    for (const auto& food : foods) {
+        if (dynamic_cast<NormalFood*>(food.get())) {
+            ++normalFoodCount;
+        } else if (dynamic_cast<PoisonousFood*>(food.get())) {
+            ++poisonousFoodCount;
         }
     }
-    foods.erase(std::remove(foods.begin(), foods.end(), nullptr), foods.end());
+
+    while (normalFoodCount < 3) {
+        foods.push_back(FoodFactory::createFood(FoodType::Normal, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\normal.png"));
+        ++normalFoodCount;
+    }
+    while (poisonousFoodCount < 4) {
+        foods.push_back(FoodFactory::createFood(FoodType::Poisonous, "C:\\KSE\\OOP_design\\Assignment_5_6\\asmt-5-game-engine-olesia-mykhailyshyn\\poisonous.png"));
+        ++poisonousFoodCount;
+    }
+}
+
+void Game::respawnAllFood() {
+    for (auto& food : foods) {
+        food->respawn();
+    }
 }
 
 void Game::render(sf::RenderWindow& window) {

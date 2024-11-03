@@ -1,17 +1,13 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <string>
 #include <memory>
 #include "Snake.h"
 #include "Food.h"
+#include "FoodFactory.h"
 #include "Scoreboard.h"
 #include "InputHandler.h"
-
-enum class FoodBehavior {
-    Static,
-    Moving,
-    Timed
-};
 
 class Game {
 public:
@@ -24,22 +20,20 @@ private:
     void render(sf::RenderWindow& window);
     void handleCommand(Command command);
     static void drawGrid(sf::RenderWindow& window);
+
+    void maintainFoodCount();
+    void respawnAllFood();
     void updateShadows();
     void drawShadows(sf::RenderWindow& window);
-    void updateFood();
 
     Snake snake;
     std::vector<std::unique_ptr<Food>> foods;
+    std::vector<sf::CircleShape> shadows;
+
     std::string playerName;
     bool gameOver = false;
-
-    // Тіньові ділянки
-    std::vector<sf::CircleShape> shadows;
+    const int maxFoodCount = 7;
+    sf::Clock foodRespawnTimer;
+    sf::Time shadowUpdateInterval = sf::seconds(5);
     sf::Clock shadowTimer;
-    const sf::Time shadowUpdateInterval = sf::seconds(2);
-
-    sf::Clock foodSpawnTimer;
-    const sf::Time foodSpawnInterval = sf::seconds(5);
-
-    const int maxFoodCount = 10;  // Максимальна кількість їжі на екрані
 };

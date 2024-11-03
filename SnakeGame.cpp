@@ -16,7 +16,7 @@ int main() {
         if (choice == 2) {
             Scoreboard& scoreboard = Scoreboard::getInstance();
             scoreboard.loadScores();
-            showScoreboard(window, "", 0);  
+            showScoreboard(window, "", 0);
             continue;
         }
 
