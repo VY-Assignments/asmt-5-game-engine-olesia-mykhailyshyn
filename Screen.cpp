@@ -161,7 +161,7 @@ void showGameOverScreen(sf::RenderWindow& window) {
 }
 
 void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int playerScore) {
-    Scoreboard scoreboard(R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)");
+    Scoreboard& scoreboard = Scoreboard::getInstance();
     scoreboard.loadScores();
 
     sf::Font font;

@@ -18,24 +18,18 @@ void Scoreboard::loadScores() {
     std::string line;
     while (std::getline(fileStream, line)) {
         std::istringstream lineStream(line);
-        std::getline(lineStream, entry.name, ','); // CSV delimiter
+        std::getline(lineStream, entry.name, ',');
         lineStream >> entry.score;
         scores.push_back(entry);
     }
     fileStream.close();
 
-    std::sort(scores.begin(), scores.end());  // Sort in descending order of score
-}
-
-int Scoreboard::getTotalPlayers() const {
-    return scores.size();  // Total number of entries loaded
+    std::sort(scores.begin(), scores.end());
 }
 
 void Scoreboard::saveScore(const std::string& name, int score) {
     loadScores();
     scores.push_back({ name, score });
-
-    // Sort the scores after adding the new entry
     std::sort(scores.begin(), scores.end());
 
     std::ofstream fileStream(file);
@@ -44,7 +38,6 @@ void Scoreboard::saveScore(const std::string& name, int score) {
         return;
     }
 
-    // Save all scores in CSV format
     for (const auto& entry : scores) {
         fileStream << entry.name << "," << entry.score << "\n";
     }
@@ -66,9 +59,12 @@ int Scoreboard::getRank(const std::string& name, int score) const {
             return i + 1;
         }
     }
-    return -1;  // If not found
+    return -1;
 }
 
+int Scoreboard::getTotalPlayers() const {
+    return scores.size();
+}
 
 bool ScoreEntry::operator<(const ScoreEntry& other) const {
     return score > other.score;

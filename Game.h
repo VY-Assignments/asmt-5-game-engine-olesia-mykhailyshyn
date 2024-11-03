@@ -20,7 +20,6 @@ private:
     Snake snake;
     NormalFood normalFood{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\normal.png)"};
     PoisonousFood poisonousFood{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\poisonous.png)"};
-    Scoreboard scoreboard{R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)"};
     InputHandler inputHandler;
     std::string playerName;
     bool gameOver = false;

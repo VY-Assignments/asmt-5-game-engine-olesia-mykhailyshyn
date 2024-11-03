@@ -3,6 +3,7 @@
 #include <string>
 #include "Game.h"
 #include "Screen.h"
+#include "Scoreboard.h"
 
 int main() {
     std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -13,7 +14,10 @@ int main() {
         if (choice == 3 || !window.isOpen()) return 0;
 
         if (choice == 2) {
-            showScoreboard(window, "", 0);
+            // Access the singleton instance to load scores before showing the scoreboard
+            Scoreboard& scoreboard = Scoreboard::getInstance();
+            scoreboard.loadScores();  // Ensure scores are loaded
+            showScoreboard(window, "", 0);  // Display the scoreboard screen
             continue;
         }
 
@@ -22,7 +26,7 @@ int main() {
             if (playerName.empty()) continue;
 
             Game game(playerName);
-            game.run(window);
+            game.run(window);  // Play the game
 
             if (window.isOpen()) {
                 showScoreboard(window, playerName, game.getFinalScore());

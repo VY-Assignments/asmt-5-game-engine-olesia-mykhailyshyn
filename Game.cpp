@@ -3,7 +3,6 @@
 
 Game::Game(const std::string& playerName) : playerName(playerName) {
     gameOver = false;
-    scoreboard = Scoreboard(R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)"); // Initialize Scoreboard with file path
 }
 
 void Game::run(sf::RenderWindow& window) {
@@ -23,7 +22,12 @@ void Game::run(sf::RenderWindow& window) {
         update();
         render(window);
     }
-    scoreboard.saveScore(playerName, snake.getSize());
+
+    Scoreboard::getInstance().saveScore(playerName, snake.getSize());
+}
+
+int Game::getFinalScore() const {
+    return snake.getSize();
 }
 
 void Game::update() {
@@ -41,18 +45,18 @@ void Game::update() {
             poisonousFood.respawn();
         }
         else {
-            scoreboard.saveScore(playerName, snake.getSize());
+            Scoreboard::getInstance().saveScore(playerName, snake.getSize());
             gameOver = true;
         }
     }
 
     if (snake.checkCollision()) {
-        scoreboard.saveScore(playerName, snake.getSize());
+        Scoreboard::getInstance().saveScore(playerName, snake.getSize());
         gameOver = true;
     }
 
     if (snake.reachedMaxSize()) {
-        scoreboard.saveScore(playerName, snake.getSize());
+        Scoreboard::getInstance().saveScore(playerName, snake.getSize());
         std::cout << "Congratulations! You reached the maximum size!" << std::endl;
         gameOver = true;
     }
@@ -69,22 +73,23 @@ void Game::render(sf::RenderWindow& window) {
 
 void Game::handleCommand(Command command) {
     switch (command) {
-        case Command::MoveUp: {
-            snake.changeDirection(Up); break;
-        }
-        case Command::MoveDown: {
-            snake.changeDirection(Down); break;
-        }
-        case Command::MoveLeft: {
-            snake.changeDirection(Left); break;
-        }
-        case Command::MoveRight: {
-            snake.changeDirection(Right); break;
-        }
-        case Command::Confirm: {
-            gameOver = true; break;
-        }
-        default: break;
+        case Command::MoveUp:
+            snake.changeDirection(Up);
+            break;
+        case Command::MoveDown:
+            snake.changeDirection(Down);
+            break;
+        case Command::MoveLeft:
+            snake.changeDirection(Left);
+            break;
+        case Command::MoveRight:
+            snake.changeDirection(Right);
+            break;
+        case Command::Confirm:
+            gameOver = true;
+            break;
+        default:
+            break;
     }
 }
 
@@ -103,8 +108,4 @@ void Game::drawGrid(sf::RenderWindow& window) {
             window.draw(cell);
         }
     }
-}
-
-int Game::getFinalScore() const {
-    return snake.getSize();
 }
