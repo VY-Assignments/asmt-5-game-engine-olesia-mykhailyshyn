@@ -28,8 +28,8 @@ public:
     static std::istream& ReadScoreEntry(std::istream& is, ScoreEntry& entry);
 
     explicit Scoreboard(const std::string& file);
-    Scoreboard(const Scoreboard&) = delete;
-    Scoreboard& operator=(const Scoreboard&) = delete;
+    Scoreboard(const Scoreboard&) = delete; //not to copy
+    Scoreboard& operator=(const Scoreboard&) = delete; //not to assign
 
 private:
     std::string file;

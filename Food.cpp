@@ -1,5 +1,5 @@
 #include "Food.h"
-#include <cstdlib>
+#include <cstdlib> //random
 
 Food::Food(const std::string& textureFile) {
     texture.loadFromFile(textureFile);

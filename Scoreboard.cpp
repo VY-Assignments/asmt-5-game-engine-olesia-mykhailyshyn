@@ -10,7 +10,7 @@ void Scoreboard::LoadScores() {
     scores.clear();
     std::ifstream fileStream(file);
     if (!fileStream.is_open()) {
-        std::cerr << "Error: Could not open score file for reading.\n";
+        std::cout << "Error: Could not open score file for reading.\n";
         return;
     }
 

@@ -26,7 +26,7 @@ Game::Game(const std::string& playerName) : playerName(playerName) {
 
 void Game::Run(sf::RenderWindow& window) {
     GameRenderer renderer(*this);
-    window.setFramerateLimit(8);
+    window.setFramerateLimit(7);
 
     while (window.isOpen() && !gameOver) {
         sf::Event event{};
@@ -45,7 +45,7 @@ void Game::Run(sf::RenderWindow& window) {
             window.setFramerateLimit(12);
         }
         else {
-            window.setFramerateLimit(8);
+            window.setFramerateLimit(7);
         }
 
         Update();

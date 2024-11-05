@@ -14,8 +14,8 @@ public:
 
 protected:
     sf::Vector2f position;
-    sf::Texture texture;
-    sf::Sprite sprite;
+    sf::Texture texture; //download photo
+    sf::Sprite sprite; //show photo on board
     sf::Clock moveClock;
     const sf::Time moveInterval = sf::seconds(5);
 };

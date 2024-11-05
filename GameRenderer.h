@@ -7,7 +7,7 @@ public:
     explicit GameRenderer(Game& game);
 
     void Render(sf::RenderWindow& window);
-    void DrawGrid(sf::RenderWindow& window);
+    static void DrawGrid(sf::RenderWindow& window);
     void DrawShadows(sf::RenderWindow& window);
 
 private:

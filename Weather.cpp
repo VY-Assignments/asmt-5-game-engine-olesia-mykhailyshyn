@@ -1,7 +1,7 @@
 #include "Weather.h"
 #include <cstdlib>
 
-Weather::Weather() : currentWeather(WeatherType::Clear), weatherDuration(sf::seconds(5)) {}
+Weather::Weather() : currentWeather(WeatherType::Clear), weatherDuration(sf::seconds(6)) {}
 
 void Weather::Update() {
     if (weatherChangeTimer.getElapsedTime() > weatherDuration) {
