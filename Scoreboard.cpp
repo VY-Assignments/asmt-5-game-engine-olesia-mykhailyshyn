@@ -18,8 +18,7 @@ void Scoreboard::LoadScores() {
     std::string line;
     while (std::getline(fileStream, line)) {
         std::istringstream lineStream(line);
-        std::getline(lineStream, entry.name, ',');
-        lineStream >> entry.score;
+        ReadScoreEntry(lineStream, entry);
         scores.push_back(entry);
     }
     fileStream.close();
@@ -34,12 +33,12 @@ void Scoreboard::SaveScore(const std::string& name, int score) {
 
     std::ofstream fileStream(file);
     if (!fileStream.is_open()) {
-        std::cerr << "Error: Could not open score file for writing.\n";
+        std::cout << "Error: Could not open score file for writing.\n";
         return;
     }
 
     for (const auto& entry : scores) {
-        fileStream << entry.name << "," << entry.score << "\n";
+        PrintScoreEntry(fileStream, entry) << "\n";
     }
     fileStream.close();
 }
@@ -70,12 +69,12 @@ bool ScoreEntry::operator<(const ScoreEntry& other) const {
     return score > other.score;
 }
 
-std::ostream& operator<<(std::ostream& os, const ScoreEntry& entry) {
+std::ostream& Scoreboard::PrintScoreEntry(std::ostream& os, const ScoreEntry& entry) {
     os << entry.name << "-" << entry.score;
     return os;
 }
 
-std::istream& operator>>(std::istream& is, ScoreEntry& entry) {
+std::istream& Scoreboard::ReadScoreEntry(std::istream& is, ScoreEntry& entry) {
     std::getline(is, entry.name, '-');
     is >> entry.score;
     return is;

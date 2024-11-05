@@ -9,8 +9,6 @@ struct ScoreEntry {
     int score;
 
     bool operator<(const ScoreEntry& other) const;
-    friend std::ostream& operator<<(std::ostream& os, const ScoreEntry& entry);
-    friend std::istream& operator>>(std::istream& is, ScoreEntry& entry);
 };
 
 class Scoreboard {
@@ -25,6 +23,10 @@ public:
     [[nodiscard]] std::vector<ScoreEntry> getTopScores(int n) const;
     [[nodiscard]] int GetRank(const std::string& name, int score) const;
     [[nodiscard]] int GetTotalPlayers() const;
+
+    static std::ostream& PrintScoreEntry(std::ostream& os, const ScoreEntry& entry);
+    static std::istream& ReadScoreEntry(std::istream& is, ScoreEntry& entry);
+
     explicit Scoreboard(const std::string& file);
     Scoreboard(const Scoreboard&) = delete;
     Scoreboard& operator=(const Scoreboard&) = delete;
