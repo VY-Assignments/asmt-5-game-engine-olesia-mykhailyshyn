@@ -6,9 +6,9 @@ class GameRenderer {
 public:
     explicit GameRenderer(Game& game);
 
-    void render(sf::RenderWindow& window);
-    void drawGrid(sf::RenderWindow& window);
-    void drawShadows(sf::RenderWindow& window);
+    void Render(sf::RenderWindow& window);
+    void DrawGrid(sf::RenderWindow& window);
+    void DrawShadows(sf::RenderWindow& window);
 
 private:
     Game& game;

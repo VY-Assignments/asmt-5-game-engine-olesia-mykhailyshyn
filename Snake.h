@@ -2,26 +2,29 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 
-enum Direction { Up, Down, Left, Right };
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right
+};
 
 class Snake {
 public:
     Snake();
-    void move();
-    void growSnake();
-    void shrinkSnake();
-    void changeDirection(Direction newDirection);
-    [[nodiscard]] bool checkCollision() const;
-    [[nodiscard]] bool reachedMaxSize() const;
-    [[nodiscard]] sf::Vector2f getHeadPosition() const;
-    void setFirstFoodEaten();
-    [[nodiscard]] int getSize() const { return segments.size(); }
-    void draw(sf::RenderWindow& window);
+    void Move();
+    void Grow();
+    void Shrink();
+    void ChangeDirection(Direction newDirection);
+    [[nodiscard]] bool Collision() const;
+    [[nodiscard]] bool MaxSize() const;
+    [[nodiscard]] sf::Vector2f GetHead() const;
+    [[nodiscard]] int GetSize() const;
+    void Draw(sf::RenderWindow& window);
 
 private:
     std::vector<sf::Vector2f> segments;
     Direction direction;
     bool grow;
     int size;
-    bool firstFoodEaten;
 };

@@ -2,21 +2,21 @@
 
 GameRenderer::GameRenderer(Game& game) : game(game) {}
 
-void GameRenderer::render(sf::RenderWindow& window) {
+void GameRenderer::Render(sf::RenderWindow& window) {
     window.clear(sf::Color(20, 20, 50));
-    drawGrid(window);
-    game.snake.draw(window);
+    DrawGrid(window);
+    game.snake.Draw(window);
 
     for (const auto& food : game.foods) {
-        food->draw(window);
+        food->Draw(window);
     }
 
-    drawShadows(window);
-    game.weather.render(window);
+    DrawShadows(window);
+    game.weather.Render(window);
     window.display();
 }
 
-void GameRenderer::drawGrid(sf::RenderWindow& window) {
+void GameRenderer::DrawGrid(sf::RenderWindow& window) {
     const int WIDTH = 1500;
     const int HEIGHT = 1000;
     const int SIZE = 50;
@@ -33,7 +33,7 @@ void GameRenderer::drawGrid(sf::RenderWindow& window) {
     }
 }
 
-void GameRenderer::drawShadows(sf::RenderWindow& window) {
+void GameRenderer::DrawShadows(sf::RenderWindow& window) {
     for (const auto& shadow : game.shadows) {
         window.draw(shadow);
     }

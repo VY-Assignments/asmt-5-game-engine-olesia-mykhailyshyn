@@ -9,9 +9,9 @@ enum class WeatherType {
 class Weather {
 public:
     Weather();
-    void update();
-    [[nodiscard]] WeatherType getCurrentWeather() const;
-    void render(sf::RenderWindow& window);
+    void Update();
+    [[nodiscard]] WeatherType GetCurrentWeather() const;
+    void Render(sf::RenderWindow& window);
 
 private:
     WeatherType currentWeather;
@@ -20,7 +20,7 @@ private:
     sf::Time weatherDuration;
     std::vector<sf::RectangleShape> raindrops;
 
-    void startRain();
-    void stopRain();
-    void updateRain();
+    void StartRain();
+    void StopRain();
+    void UpdateRain();
 };

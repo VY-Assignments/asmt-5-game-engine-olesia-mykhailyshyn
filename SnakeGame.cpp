@@ -10,26 +10,30 @@ int main() {
     sf::RenderWindow window(sf::VideoMode(1500, 1000), "Snake Game");
 
     while (window.isOpen()) {
-        int choice = showWelcomeScreen(window);
-        if (choice == 3 || !window.isOpen()) return 0;
+        int choice = ShowWelcome(window);
+        if (choice == 3 || !window.isOpen()) {
+            return 0;
+        }
 
         if (choice == 2) {
-            Scoreboard& scoreboard = Scoreboard::getInstance();
-            scoreboard.loadScores();
-            showScoreboard(window, "", 0);
+            Scoreboard& scoreboard = Scoreboard::GetInstance();
+            scoreboard.LoadScores();
+            ShowScoreboard(window, "", 0);
             continue;
         }
 
         if (choice == 1) {
-            std::string playerName = enterPlayerName(window);
-            if (playerName.empty()) continue;
+            std::string playerName = EnterName(window);
+            if (playerName.empty()) {
+                continue;
+            }
 
             Game game(playerName);
-            game.run(window);
+            game.Run(window);
 
             if (window.isOpen()) {
-                showScoreboard(window, playerName, game.getFinalScore());
-                showGameOverScreen(window);
+                ShowScoreboard(window, playerName, game.GetFinalScore());
+                ShowGameOver(window);
             }
         }
     }

@@ -1,8 +1,6 @@
 #include "InputHandler.h"
 
-InputHandler::InputHandler() : currentCommand(Command::None) {}
-
-Command InputHandler::handleInput(const sf::Event& event) {
+Command InputHandler::HandleInput(const sf::Event& event) {
     if (event.type == sf::Event::KeyPressed) {
         switch (event.key.code) {
             case sf::Keyboard::Up: {

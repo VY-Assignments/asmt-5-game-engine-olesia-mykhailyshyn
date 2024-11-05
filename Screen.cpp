@@ -1,13 +1,11 @@
 #include "Screen.h"
 #include <SFML/Graphics.hpp>
-#include <iostream>
-#include <stdexcept>
 #include "Scoreboard.h"
 
 const int WIDTH = 1500;
-const int HEIGHT = 1000;
+constexpr int HEIGHT = 1000;
 
-int showWelcomeScreen(sf::RenderWindow& window) {
+int ShowWelcome(sf::RenderWindow& window) {
     sf::Font font;
     font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
@@ -28,7 +26,7 @@ int showWelcomeScreen(sf::RenderWindow& window) {
     option3.setPosition(WIDTH / 2 - option3.getGlobalBounds().width / 2, HEIGHT / 2 + 50);
 
     while (window.isOpen()) {
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
@@ -57,7 +55,7 @@ int showWelcomeScreen(sf::RenderWindow& window) {
     return 3;
 }
 
-std::string enterPlayerName(sf::RenderWindow& window) {
+std::string EnterName(sf::RenderWindow& window) {
     sf::Font font;
     font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
@@ -73,7 +71,7 @@ std::string enterPlayerName(sf::RenderWindow& window) {
     instruction.setFillColor(sf::Color::White);
     instruction.setPosition(WIDTH / 2 - instruction.getGlobalBounds().width / 2, HEIGHT / 3 + 150);
 
-    std::string playerName = "";
+    std::string playerName;
     sf::Text playerNameText("", font, 30);
     playerNameText.setFillColor(sf::Color::Yellow);
     playerNameText.setPosition(WIDTH / 2 - 100, HEIGHT / 3 + 50);
@@ -84,16 +82,17 @@ std::string enterPlayerName(sf::RenderWindow& window) {
     inputBox.setOutlineThickness(2);
     inputBox.setPosition(WIDTH / 2 - 200, HEIGHT / 3 + 45);
 
-    sf::Event clearEvent;
+    sf::Event clearEvent{};
     while (window.pollEvent(clearEvent)) {
     }
 
     while (window.isOpen()) {
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-            } else if (event.type == sf::Event::TextEntered) {
+            }
+            else if (event.type == sf::Event::TextEntered) {
                 if (event.text.unicode == '\b' && !playerName.empty()) {
                     playerName.pop_back();
                 }
@@ -111,7 +110,8 @@ std::string enterPlayerName(sf::RenderWindow& window) {
                     else {
                         return playerName;
                     }
-                } else if (event.key.code == sf::Keyboard::Num3) {
+                }
+                else if (event.key.code == sf::Keyboard::Num3) {
                     return "";
                 }
             }
@@ -129,11 +129,9 @@ std::string enterPlayerName(sf::RenderWindow& window) {
     return "";
 }
 
-void showGameOverScreen(sf::RenderWindow& window) {
+void ShowGameOver(sf::RenderWindow& window) {
     sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
-        throw std::runtime_error("Unable to load font!");
-    }
+    font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
     sf::Text gameOverText("Game Over", font, 50);
     gameOverText.setFillColor(sf::Color::Red);
@@ -144,11 +142,12 @@ void showGameOverScreen(sf::RenderWindow& window) {
     restartText.setPosition(WIDTH / 2 - restartText.getGlobalBounds().width / 2, HEIGHT / 2);
 
     while (window.isOpen()) {
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-            } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+            }
+            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
                 return;
             }
         }
@@ -160,14 +159,12 @@ void showGameOverScreen(sf::RenderWindow& window) {
     }
 }
 
-void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int playerScore) {
-    Scoreboard& scoreboard = Scoreboard::getInstance();
-    scoreboard.loadScores();
+void ShowScoreboard(sf::RenderWindow& window, const std::string& playerName, int playerScore) {
+    Scoreboard& scoreboard = Scoreboard::GetInstance();
+    scoreboard.LoadScores();
 
     sf::Font font;
-    if (!font.loadFromFile("C:/Windows/Fonts/Arial.ttf")) {
-        throw std::runtime_error("Unable to load font!");
-    }
+    font.loadFromFile("C:/Windows/Fonts/Arial.ttf");
 
     sf::Text scoreboardTitle("Scoreboard", font, 50);
     scoreboardTitle.setFillColor(sf::Color::Yellow);
@@ -177,13 +174,16 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
     if (!scoreboard.getTopScores(1).empty()) {
         highestScore = scoreboard.getTopScores(1)[0].score;
     }
+//    else {
+//        std::cout << "Warning: No scores available in TopScores\n";
+//    }
     int winningScore = highestScore + 1;
 
     sf::Text winCondition("To win, reach at least a score of " + std::to_string(winningScore), font, 25);
     winCondition.setFillColor(sf::Color::White);
     winCondition.setPosition(WIDTH / 4, HEIGHT / 6);
 
-    sf::Text totalPlayers("Total Players: " + std::to_string(scoreboard.getTotalPlayers()), font, 25);
+    sf::Text totalPlayers("Total Players: " + std::to_string(scoreboard.GetTotalPlayers()), font, 25);
     totalPlayers.setFillColor(sf::Color::White);
     totalPlayers.setPosition(WIDTH / 4, HEIGHT / 6 + 40);
 
@@ -194,9 +194,11 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
 
     int y_offset = HEIGHT / 4;
     int count = 1;
-
     for (const auto& score : scoreboard.getTopScores(3)) {
-        std::string scoreText = std::to_string(count) + ". " + score.name + " - " + std::to_string(score.score);
+        std::string scoreText = std::to_string(count) + ". " + score.name;
+        if (score.score != 0) {
+            scoreText += " - " + std::to_string(score.score);
+        }
         sf::Text scoreEntry(scoreText, font, 30);
         scoreEntry.setFillColor(sf::Color::Cyan);
         scoreEntry.setPosition(WIDTH / 4, y_offset);
@@ -205,7 +207,7 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
         count++;
     }
 
-    int playerRank = scoreboard.getRank(playerName, playerScore);
+    int playerRank = scoreboard.GetRank(playerName, playerScore);
     if (playerRank > 3) {
         std::string playerRankText = "Your rank: " + std::to_string(playerRank) + ". " + playerName + " - " + std::to_string(playerScore);
         sf::Text playerRankEntry(playerRankText, font, 25);
@@ -222,11 +224,12 @@ void showScoreboard(sf::RenderWindow& window, const std::string& playerName, int
     window.display();
 
     while (window.isOpen()) {
-        sf::Event event;
+        sf::Event event{};
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) {
                 window.close();
-            } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
+            }
+            else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::Enter) {
                 return;
             }
         }

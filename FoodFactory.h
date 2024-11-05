@@ -11,12 +11,15 @@ class FoodFactory {
 public:
     static std::unique_ptr<Food> createFood(FoodType type, const std::string& textureFile) {
         switch (type) {
-            case FoodType::Normal:
+            case FoodType::Normal: {
                 return std::make_unique<NormalFood>(textureFile);
-            case FoodType::Poisonous:
+            }
+            case FoodType::Poisonous: {
                 return std::make_unique<PoisonousFood>(textureFile);
-            default:
-                throw std::invalid_argument("Unknown food type");
+            }
+            default: {
+                std::cout << "Unknown food type" << std::endl;
+            }
         }
     }
 };

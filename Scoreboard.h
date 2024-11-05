@@ -15,22 +15,21 @@ struct ScoreEntry {
 
 class Scoreboard {
 public:
-    static Scoreboard& getInstance() {
+    static Scoreboard& GetInstance() {
         static Scoreboard instance(R"(C:\KSE\OOP_design\Assignment_5_6\asmt-5-game-engine-olesia-mykhailyshyn\Scoreboard.txt)");
         return instance;
     }
 
-    void loadScores();
-    void saveScore(const std::string& name, int score);
+    void LoadScores();
+    void SaveScore(const std::string& name, int score);
     [[nodiscard]] std::vector<ScoreEntry> getTopScores(int n) const;
-    [[nodiscard]] int getRank(const std::string& name, int score) const;
-    [[nodiscard]] int getTotalPlayers() const;
+    [[nodiscard]] int GetRank(const std::string& name, int score) const;
+    [[nodiscard]] int GetTotalPlayers() const;
     explicit Scoreboard(const std::string& file);
     Scoreboard(const Scoreboard&) = delete;
-
-private:
     Scoreboard& operator=(const Scoreboard&) = delete;
 
+private:
     std::string file;
     std::vector<ScoreEntry> scores;
 };

@@ -6,7 +6,7 @@
 
 Scoreboard::Scoreboard(const std::string& file) : file(file) {}
 
-void Scoreboard::loadScores() {
+void Scoreboard::LoadScores() {
     scores.clear();
     std::ifstream fileStream(file);
     if (!fileStream.is_open()) {
@@ -27,8 +27,8 @@ void Scoreboard::loadScores() {
     std::sort(scores.begin(), scores.end());
 }
 
-void Scoreboard::saveScore(const std::string& name, int score) {
-    loadScores();
+void Scoreboard::SaveScore(const std::string& name, int score) {
+    LoadScores();
     scores.push_back({ name, score });
     std::sort(scores.begin(), scores.end());
 
@@ -53,7 +53,7 @@ std::vector<ScoreEntry> Scoreboard::getTopScores(int n) const {
     return topScores;
 }
 
-int Scoreboard::getRank(const std::string& name, int score) const {
+int Scoreboard::GetRank(const std::string& name, int score) const {
     for (size_t i = 0; i < scores.size(); ++i) {
         if (scores[i].name == name && scores[i].score == score) {
             return i + 1;
@@ -62,7 +62,7 @@ int Scoreboard::getRank(const std::string& name, int score) const {
     return -1;
 }
 
-int Scoreboard::getTotalPlayers() const {
+int Scoreboard::GetTotalPlayers() const {
     return scores.size();
 }
 

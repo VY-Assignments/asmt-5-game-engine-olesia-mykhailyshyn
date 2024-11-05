@@ -24,7 +24,7 @@ Game::Game(const std::string& playerName) : playerName(playerName) {
     }
 }
 
-void Game::run(sf::RenderWindow& window) {
+void Game::Run(sf::RenderWindow& window) {
     GameRenderer renderer(*this);
     window.setFramerateLimit(8);
 
@@ -34,86 +34,87 @@ void Game::run(sf::RenderWindow& window) {
             if (event.type == sf::Event::Closed)
                 window.close();
             else {
-                Command command = InputHandler::handleInput(event);
-                handleCommand(command);
+                Command command = InputHandler::HandleInput(event);
+                HandleCommand(command);
             }
         }
 
-        weather.update();
+        weather.Update();
 
-        if (weather.getCurrentWeather() == WeatherType::Rain) {
+        if (weather.GetCurrentWeather() == WeatherType::Rain) {
             window.setFramerateLimit(12);
-        } else {
+        }
+        else {
             window.setFramerateLimit(8);
         }
 
-        update();
-        renderer.render(window);  
+        Update();
+        renderer.Render(window);
     }
 
-    Scoreboard::getInstance().saveScore(playerName, snake.getSize());
+    Scoreboard::GetInstance().SaveScore(playerName, snake.GetSize());
 }
 
-int Game::getFinalScore() const {
-    return snake.getSize();
+int Game::GetFinalScore() const {
+    return snake.GetSize();
 }
 
-void Game::update() {
-    snake.move();
-
-    bool foodEaten = false;
+void Game::Update() {
+    snake.Move();
 
     for (auto it = foods.begin(); it != foods.end();) {
-        if (snake.getHeadPosition() == (*it)->getPosition()) {
-            foodEaten = true;
+        if (snake.GetHead() == (*it)->GetPosition()) {
 
             if (dynamic_cast<NormalFood*>(it->get())) {
-                snake.growSnake();
-                snake.setFirstFoodEaten();
-            } else if (dynamic_cast<PoisonousFood*>(it->get())) {
-                if (snake.getSize() > 1) {
-                    snake.shrinkSnake();
-                } else {
-                    Scoreboard::getInstance().saveScore(playerName, snake.getSize());
+                snake.Grow();
+            }
+            else if (dynamic_cast<PoisonousFood*>(it->get())) {
+                if (snake.GetSize() > 1) {
+                    snake.Shrink();
+                }
+                else {
+                    Scoreboard::GetInstance().SaveScore(playerName, snake.GetSize());
                     gameOver = true;
                     return;
                 }
             }
             it = foods.erase(it);
-        } else {
+        }
+        else {
             ++it;
         }
     }
 
-    maintainFoodCount();
+    FoodCount();
 
     if (foodRespawnTimer.getElapsedTime().asSeconds() > 5) {
-        respawnAllFood();
+        RelocateFood();
         foodRespawnTimer.restart();
     }
 
-    if (snake.checkCollision()) {
-        Scoreboard::getInstance().saveScore(playerName, snake.getSize());
+    if (snake.Collision()) {
+        Scoreboard::GetInstance().SaveScore(playerName, snake.GetSize());
         gameOver = true;
     }
 
-    if (snake.reachedMaxSize()) {
-        Scoreboard::getInstance().saveScore(playerName, snake.getSize());
+    if (snake.MaxSize()) {
+        Scoreboard::GetInstance().SaveScore(playerName, snake.GetSize());
         std::cout << "Congratulations! You reached the maximum size!" << std::endl;
         gameOver = true;
     }
 
-    updateShadows();
+    UpdateShadows();
 }
 
-void Game::maintainFoodCount() {
+void Game::FoodCount() {
     int normalFoodCount = 0;
     int poisonousFoodCount = 0;
 
     for (const auto& food : foods) {
         if (dynamic_cast<NormalFood*>(food.get())) {
             ++normalFoodCount;
-        } else if (dynamic_cast<PoisonousFood*>(food.get())) {
+        }
+        else if (dynamic_cast<PoisonousFood*>(food.get())) {
             ++poisonousFoodCount;
         }
     }
@@ -128,38 +129,43 @@ void Game::maintainFoodCount() {
     }
 }
 
-void Game::respawnAllFood() {
+void Game::RelocateFood() {
     for (auto& food : foods) {
-        food->respawn();
+        food->Relocate();
     }
 }
 
-void Game::handleCommand(Command command) {
+void Game::HandleCommand(Command command) {
     switch (command) {
-        case Command::MoveUp:
-            snake.changeDirection(Up);
+        case Command::MoveUp: {
+            snake.ChangeDirection(Up);
             break;
-        case Command::MoveDown:
-            snake.changeDirection(Down);
+        }
+        case Command::MoveDown: {
+            snake.ChangeDirection(Down);
             break;
-        case Command::MoveLeft:
-            snake.changeDirection(Left);
+        }
+        case Command::MoveLeft: {
+            snake.ChangeDirection(Left);
             break;
-        case Command::MoveRight:
-            snake.changeDirection(Right);
+        }
+        case Command::MoveRight: {
+            snake.ChangeDirection(Right);
             break;
-        case Command::Confirm:
+        }
+        case Command::Confirm: {
             gameOver = true;
             break;
+        }
         default:
             break;
     }
 }
 
-void Game::updateShadows() {
+void Game::UpdateShadows() {
     if (shadowTimer.getElapsedTime() >= shadowUpdateInterval) {
         for (auto& shadow : shadows) {
-            float newSize = static_cast<float>((std::rand() % 200) + 100);
+            auto newSize = static_cast<float>((std::rand() % 200) + 100);
             shadow.setRadius(newSize);
 
             shadow.setPosition(

@@ -1,19 +1,20 @@
 #include "Snake.h"
 
-Snake::Snake() : direction(Right), grow(false), size(1), firstFoodEaten(false) {
+//Snake::Snake() : direction(Right), grow(false), size(1), firstFoodEaten(false) {
+Snake::Snake() : direction(Right), grow(false), size(1) {
     segments.emplace_back( 50, 50 );
 }
 
-void Snake::move() {
+void Snake::Move() {
     sf::Vector2f nextPosition = segments[0];
     switch (direction) {
-        case Up:    {
+        case Up: {
             nextPosition.y -= 50; break;
         }
-        case Down:  {
+        case Down: {
             nextPosition.y += 50; break;
         }
-        case Left:  {
+        case Left: {
             nextPosition.x -= 50; break;
         }
         case Right: {
@@ -44,20 +45,26 @@ void Snake::move() {
     }
 }
 
-void Snake::growSnake() { grow = true; }
+void Snake::Grow() {
+    grow = true;
+}
 
-void Snake::shrinkSnake() {
+void Snake::Shrink() {
     if (segments.size() > 1) {
         segments.pop_back();
         --size;
     }
 }
 
-bool Snake::reachedMaxSize() const { return size >= 200; }
+bool Snake::MaxSize() const {
+    return size >= 200;
+}
 
-sf::Vector2f Snake::getHeadPosition() const { return segments[0]; }
+sf::Vector2f Snake::GetHead() const {
+    return segments[0];
+}
 
-void Snake::draw(sf::RenderWindow& window) {
+void Snake::Draw(sf::RenderWindow& window) {
     sf::RectangleShape segmentShape(sf::Vector2f(50, 50));
     segmentShape.setFillColor(sf::Color(128, 0, 128));
     for (const auto& segment : segments) {
@@ -66,7 +73,7 @@ void Snake::draw(sf::RenderWindow& window) {
     }
 }
 
-void Snake::changeDirection(Direction newDirection) {
+void Snake::ChangeDirection(Direction newDirection) {
     if ((direction == Up && newDirection != Down) ||
         (direction == Down && newDirection != Up) ||
         (direction == Left && newDirection != Right) ||
@@ -75,14 +82,20 @@ void Snake::changeDirection(Direction newDirection) {
     }
 }
 
-void Snake::setFirstFoodEaten() {
-    firstFoodEaten = true;
-}
+//void Snake::SetFirstFoodEaten() {
+//    firstFoodEaten = true;
+//}
 
-bool Snake::checkCollision() const {
+bool Snake::Collision() const {
     sf::Vector2f headPosition = segments[0];
     for (size_t i = 1; i < segments.size(); i++) {
-        if (segments[i] == headPosition) return true;
+        if (segments[i] == headPosition) {
+            return true;
+        }
     }
     return false;
+}
+
+int Snake::GetSize() const {
+    return segments.size();
 }

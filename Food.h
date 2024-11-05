@@ -4,59 +4,28 @@
 
 class Food {
 public:
+    explicit Food(const std::string& textureFile);
     virtual ~Food() = default;
-    virtual void respawn();
-    virtual void draw(sf::RenderWindow& window) = 0;
-    [[nodiscard]] sf::Vector2f getPosition() const { return position; }
+
+    virtual void Relocate();
+    virtual void Draw(sf::RenderWindow& window);
+    [[nodiscard]] sf::Vector2f GetPosition() const;
+    //void Update();
 
 protected:
     sf::Vector2f position;
+    sf::Texture texture;
+    sf::Sprite sprite;
+    sf::Clock moveClock;
+    const sf::Time moveInterval = sf::seconds(5);
 };
 
 class NormalFood : public Food {
 public:
-    explicit NormalFood(const std::string& textureFile);
-    void respawn() override;
-    void draw(sf::RenderWindow& window) override;
-
-private:
-    sf::Texture texture;
-    sf::Sprite sprite;
+    explicit NormalFood(const std::string& textureFile) : Food(textureFile) {}
 };
 
 class PoisonousFood : public Food {
 public:
-    explicit PoisonousFood(const std::string& textureFile);
-    void respawn() override;
-    void draw(sf::RenderWindow& window) override;
-
-private:
-    sf::Texture texture;
-    sf::Sprite sprite;
-};
-
-class MovingFood : public Food {
-public:
-    explicit MovingFood(const std::string& textureFile);
-    void respawn() override;
-    void draw(sf::RenderWindow& window) override;
-    void move();
-
-private:
-    sf::Texture texture;
-    sf::Sprite sprite;
-};
-
-class TimedFood : public Food {
-public:
-    explicit TimedFood(const std::string& textureFile);
-    void respawn() override;
-    void draw(sf::RenderWindow& window) override;
-    bool shouldDespawn() const;
-
-private:
-    sf::Texture texture;
-    sf::Sprite sprite;
-    sf::Clock lifespanClock;
-    const sf::Time lifespan = sf::seconds(10);
+    explicit PoisonousFood(const std::string& textureFile) : Food(textureFile) {}
 };

@@ -15,9 +15,5 @@ enum class Command {
 
 class InputHandler {
 public:
-    InputHandler();
-    static Command handleInput(const sf::Event& event);
-
-private:
-    Command currentCommand;
+    static Command HandleInput(const sf::Event& event);
 };

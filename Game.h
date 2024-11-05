@@ -12,8 +12,8 @@
 class Game {
 public:
     explicit Game(const std::string& playerName);
-    void run(sf::RenderWindow& window);
-    [[nodiscard]] int getFinalScore() const;
+    void Run(sf::RenderWindow& window);
+    [[nodiscard]] int GetFinalScore() const;
 
     Snake snake;
     Weather weather;
@@ -21,15 +21,15 @@ public:
     std::vector<std::unique_ptr<Food>> foods;
 
 private:
-    void update();
-    void handleCommand(Command command);
-    void maintainFoodCount();
-    void respawnAllFood();
-    void updateShadows();
+    void Update();
+    void HandleCommand(Command command);
+    void FoodCount();
+    void RelocateFood();
+    void UpdateShadows();
 
     std::string playerName;
     bool gameOver = false;
-    const int maxFoodCount = 7;
+    //const int maxFoodCount = 7;
     sf::Clock foodRespawnTimer;
     sf::Clock shadowTimer;
     sf::Time shadowUpdateInterval = sf::seconds(5);

@@ -3,26 +3,27 @@
 
 Weather::Weather() : currentWeather(WeatherType::Clear), weatherDuration(sf::seconds(5)) {}
 
-void Weather::update() {
+void Weather::Update() {
     if (weatherChangeTimer.getElapsedTime() > weatherDuration) {
         if (currentWeather == WeatherType::Clear) {
-            startRain();
-        } else {
-            stopRain();
+            StartRain();
+        }
+        else {
+            StopRain();
         }
         weatherChangeTimer.restart();
     }
 
     if (currentWeather == WeatherType::Rain) {
-        updateRain();
+        UpdateRain();
     }
 }
 
-WeatherType Weather::getCurrentWeather() const {
+WeatherType Weather::GetCurrentWeather() const {
     return currentWeather;
 }
 
-void Weather::render(sf::RenderWindow& window) {
+void Weather::Render(sf::RenderWindow& window) {
     if (currentWeather == WeatherType::Rain) {
         for (auto& drop : raindrops) {
             window.draw(drop);
@@ -30,7 +31,7 @@ void Weather::render(sf::RenderWindow& window) {
     }
 }
 
-void Weather::startRain() {
+void Weather::StartRain() {
     currentWeather = WeatherType::Rain;
     raindrops.clear();
     for (int i = 0; i < 50; ++i) {
@@ -41,12 +42,12 @@ void Weather::startRain() {
     }
 }
 
-void Weather::stopRain() {
+void Weather::StopRain() {
     currentWeather = WeatherType::Clear;
     raindrops.clear();
 }
 
-void Weather::updateRain() {
+void Weather::UpdateRain() {
     for (auto& drop : raindrops) {
         drop.move(0, 5);
         if (drop.getPosition().y > 1000) {
